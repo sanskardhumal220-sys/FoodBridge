@@ -1,0 +1,189 @@
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Globe, Clock, MessageSquare, Send } from 'lucide-react';
+import { FaFacebook, FaInstagram, FaLinkedin, FaXTwitter, FaGithub } from 'react-icons/fa6';
+import { useState } from 'react';
+
+const Contact = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      setTimeout(() => setIsSuccess(false), 5000); // Reset after 5s
+    }, 1500);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12 lg:py-24 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-primary-200/20 dark:bg-primary-900/10 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent-200/20 dark:bg-accent-900/10 rounded-full blur-3xl -z-10" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Hero Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+            📞 Contact FoodBridge
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-5 gap-12">
+          
+          {/* Left Column: Contact Info & Map */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="lg:col-span-2 space-y-6"
+          >
+            {/* Info Cards */}
+            <div className="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-6">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Get in Touch</h3>
+              
+              <ContactRow icon={<Mail />} title="Email" value="support@foodbridge.com" />
+              <ContactRow icon={<Phone />} title="Phone" value="+1 (555) 123-4567" />
+              <ContactRow icon={<MapPin />} title="Office Address" value="123 Impact Way, Sustainability City, SC 90210" />
+              <ContactRow icon={<Globe />} title="Website" value="www.foodbridge.com" />
+              <ContactRow icon={<Clock />} title="Working Hours" value="Mon - Fri, 9:00 AM - 6:00 PM" />
+
+              {/* Social Media */}
+              <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
+                <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-wider">Follow Us</p>
+                <div className="flex gap-4">
+                  <SocialIcon Icon={FaFacebook} color="text-[#1877F2]" />
+                  <SocialIcon Icon={FaInstagram} color="text-[#E4405F]" />
+                  <SocialIcon Icon={FaLinkedin} color="text-[#0A66C2]" />
+                  <SocialIcon Icon={FaXTwitter} color="text-gray-900 dark:text-white" />
+                  <SocialIcon Icon={FaGithub} color="text-gray-900 dark:text-white" />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-4">
+              <button className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold hover:border-primary-500 hover:text-primary-500 transition-all shadow-sm">
+                <MessageSquare size={18} /> Live Chat
+              </button>
+              <button className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold hover:border-accent-500 hover:text-accent-500 transition-all shadow-sm">
+                <Mail size={18} /> Email Support
+              </button>
+            </div>
+
+            {/* Map Placeholder */}
+            <div className="glass h-64 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative group">
+              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              <iframe 
+                title="Google Maps Placeholder"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531550415!3d-37.81720974201476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sus!4v1611815147514!5m2!1sen!2sus" 
+                className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                loading="lazy"
+              />
+            </div>
+          </motion.div>
+
+          {/* Right Column: Contact Form */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-3"
+          >
+            <div className="glass p-8 md:p-12 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-2 h-full bg-gradient-to-b from-primary-500 to-accent-500" />
+              
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Send a Message</h2>
+              
+              {isSuccess ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 p-6 rounded-2xl flex flex-col items-center justify-center text-center py-20"
+                >
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-800/50 rounded-full flex items-center justify-center mb-4">
+                    <Send className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Message Sent Successfully!</h3>
+                  <p>Thank you for reaching out. We will get back to you shortly.</p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                      <input required type="text" className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white transition-shadow" placeholder="John Doe" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                      <input required type="email" className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white transition-shadow" placeholder="john@example.com" />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                      <input type="tel" className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white transition-shadow" placeholder="+1 (555) 000-0000" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Subject</label>
+                      <input required type="text" className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white transition-shadow" placeholder="How can we help?" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+                    <textarea required rows="6" className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white transition-shadow resize-none" placeholder="Write your message here..."></textarea>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>Send Message <Send size={18} /></>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </motion.div>
+          
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ContactRow = ({ icon, title, value }) => (
+  <div className="flex items-start gap-4">
+    <div className="p-3 bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-xl shrink-0">
+      {icon}
+    </div>
+    <div>
+      <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">{title}</p>
+      <p className="font-medium text-gray-900 dark:text-white">{value}</p>
+    </div>
+  </div>
+);
+
+const SocialIcon = ({ Icon, color }) => (
+  <a href="#" className={`p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:scale-110 transition-transform ${color}`}>
+    <Icon className="w-5 h-5" />
+  </a>
+);
+
+export default Contact;

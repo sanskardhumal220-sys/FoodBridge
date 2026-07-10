@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary-50: #effdf5;
+  --color-primary-100: #d8fae4;
+  --color-primary-200: #b3f2cc;
+  --color-primary-300: #7be6a6;
+  --color-primary-400: #3ed17d;
+  --color-primary-500: #1ab85f;
+  --color-primary-600: #109349;
+  --color-primary-700: #10753d;
+  --color-primary-800: #115d33;
+  --color-primary-900: #104c2c;
+  --color-primary-950: #082a17;
+
+  /* Accent Orange Colors from Logo */
+  --color-accent-50: #fff8f1;
+  --color-accent-100: #ffeedc;
+  --color-accent-200: #ffdbb6;
+  --color-accent-300: #ffc186;
+  --color-accent-400: #ffa151;
+  --color-accent-500: #f58220;
+  --color-accent-600: #e76611;
+  --color-accent-700: #c04e0f;
+  --color-accent-800: #983e14;
+  --color-accent-900: #7a3514;
+  --color-accent-950: #421808;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:bg-gray-900/70 dark:border-gray-800/60;
+  }
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300;
+  font-family: var(--font-sans);
+}

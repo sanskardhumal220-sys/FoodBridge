@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" rx="60" fill="#10b981"/>
+  <!-- Bowl -->
+  <path d="M64 128 C64 180, 100 210, 128 210 C156 210, 192 180, 192 128 Z" fill="#ffffff" />
+  <!-- Leaf growing from bowl -->
+  <path d="M128 128 C128 80, 170 50, 200 50 C200 50, 190 90, 160 110 C140 125, 128 128, 128 128 Z" fill="#a7f3d0" />
+  <!-- Bowl rim line -->
+  <path d="M60 128 L196 128" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+</svg>
