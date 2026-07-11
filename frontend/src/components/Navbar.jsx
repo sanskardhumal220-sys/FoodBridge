@@ -61,7 +61,7 @@ const Navbar = () => {
               FoodBridge
             </span>
           </Link>
-          <div className="flex space-x-4 items-center">
+          <div className="flex space-x-4 items-center overflow-x-auto max-w-[55vw] sm:max-w-none no-scrollbar">
 
 
             {/* Language Switcher */}
