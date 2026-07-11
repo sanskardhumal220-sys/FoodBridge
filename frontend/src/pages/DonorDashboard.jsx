@@ -14,10 +14,6 @@ import { rankNGOs } from '../utils/distance';
 import { Star, Package } from 'lucide-react';
 const DonorDashboard = () => {
   const { t } = useTranslation();
-
-  const {
-    t
-  } = useTranslation();
   const [activeTab, setActiveTab] = useState('create'); // 'create' | 'my_donations' | 'nearby_ngos'
 
   // Creation Flow State

@@ -10,10 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { triggerNotification } from '../components/ToastProvider';
 const NGODashboard = () => {
   const { t } = useTranslation();
-
-  const {
-    t
-  } = useTranslation();
   const [activeTab, setActiveTab] = useState('available'); // 'available' | 'rescues'
   const [viewMode, setViewMode] = useState('list'); // 'list' | 'map'
   const [donations, setDonations] = useState([]);

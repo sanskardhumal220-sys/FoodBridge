@@ -9,10 +9,6 @@ import { useTranslation } from 'react-i18next';
 import FreshnessBadge from '../components/FreshnessBadge';
 const VolunteerDashboard = () => {
   const { t } = useTranslation();
-
-  const {
-    t
-  } = useTranslation();
   const [availableDeliveries, setAvailableDeliveries] = useState([]);
   const [myDeliveries, setMyDeliveries] = useState([]);
   const [loading, setLoading] = useState(true);

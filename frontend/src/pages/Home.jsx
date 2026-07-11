@@ -6,10 +6,6 @@ import { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 const Home = () => {
   const { t } = useTranslation();
-
-  const {
-    t
-  } = useTranslation();
   const {
     scrollYProgress
   } = useScroll();

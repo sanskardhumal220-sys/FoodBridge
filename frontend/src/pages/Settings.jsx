@@ -4,12 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { User, Mail, Phone, Shield, Bell, Lock, Globe, Monitor, Moon, Sun, Trash2, AlertTriangle, Key, LogOut, Smartphone, CheckCircle2, ChevronRight } from 'lucide-react';
 import { triggerNotification } from '../components/ToastProvider';
 const Settings = () => {
-  const { t } = useTranslation();
-
-  const {
-    t,
-    i18n
-  } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'system');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
