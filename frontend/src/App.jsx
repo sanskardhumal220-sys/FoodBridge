@@ -14,7 +14,7 @@ import Feedback from './pages/Feedback';
 import ReportIssue from './pages/ReportIssue';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
-import Analytics from './pages/Analytics';
+
 import ToastProvider from './components/ToastProvider';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
@@ -39,7 +39,7 @@ const AnimatedRoutes = () => {
         <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/support" element={<AnimatedPage><Support /></AnimatedPage>} />
-        <Route path="/analytics" element={<AnimatedPage><Analytics /></AnimatedPage>} />
+
       </Routes>
     </AnimatePresence>
   );

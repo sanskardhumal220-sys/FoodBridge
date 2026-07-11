@@ -62,14 +62,6 @@ const Navbar = () => {
             </span>
           </Link>
           <div className="flex space-x-4 items-center">
-            
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative group">
-              <Link to="/analytics" className="hidden sm:flex items-center text-gray-700 dark:text-gray-200 hover:text-primary-500 transition-colors font-medium text-sm">
-                <BarChart2 size={18} className="mr-1 group-hover:text-primary-500 transition-colors" />
-                Impact
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            </motion.div>
 
 
             {/* Language Switcher */}
