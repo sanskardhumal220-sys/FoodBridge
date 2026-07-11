@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import Particles from "react-tsparticles";
+import Particles from "@tsparticles/react";
 import { loadFull } from "tsparticles";
 
 const HomeHero = ({ t }) => {
