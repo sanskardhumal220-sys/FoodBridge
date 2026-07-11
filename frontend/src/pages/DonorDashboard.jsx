@@ -305,7 +305,7 @@ const DonorDashboard = () => {
                 </div>}
 
               <h3 className="text-xl font-semibold dark:text-white">{t('donor_dashboard.details_title')}</h3>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.food_type')}</label>
                   <input type="text" required value={formData.foodType} onChange={e => setFormData({
@@ -385,7 +385,7 @@ const DonorDashboard = () => {
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('donor_dashboard.success_title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-8">{t('donor_dashboard.success_desc')}</p>
               
-              {aiResult && <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {aiResult && <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
                   <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
                     <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.peopleFed}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.people_fed')}</div>
@@ -492,7 +492,7 @@ const DonorDashboard = () => {
         </div>}
 
       {activeTab === 'nearby_ngos' && <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex-1 glass p-6 rounded-3xl flex flex-col h-[700px]">
+          <div className="flex-1 glass p-4 sm:p-6 rounded-3xl flex flex-col h-[400px] lg:h-[700px]">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h3 className="text-2xl font-bold dark:text-white">{t('donor_dashboard.nearby_title')}</h3>
@@ -506,7 +506,7 @@ const DonorDashboard = () => {
             </div>
           </div>
 
-          <div className="lg:w-96 glass p-6 rounded-3xl h-[700px] flex flex-col overflow-hidden">
+          <div className="lg:w-96 glass p-4 sm:p-6 rounded-3xl h-[400px] lg:h-[700px] flex flex-col overflow-hidden">
             <h3 className="text-xl font-bold dark:text-white mb-4 flex items-center gap-2">
               <Star className="text-accent-500" />{t("donor_dashboard.text17")}</h3>
             <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">

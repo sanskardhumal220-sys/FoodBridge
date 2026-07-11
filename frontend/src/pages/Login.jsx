@@ -36,11 +36,11 @@ const Login = () => {
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
-        className="w-full max-w-md glass-card p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden"
+        className="w-full max-w-md glass-card p-6 sm:p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary-400 to-accent-400" />
         
-        <h2 className="text-4xl font-extrabold text-center mb-2 dark:text-white">{t('login.title')}</h2>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-2 dark:text-white">{t('login.title')}</h2>
         <p className="text-center text-gray-500 dark:text-gray-400 mb-8 font-medium">Welcome back! Please enter your details.</p>
         
         <form onSubmit={handleLogin} className="space-y-6">

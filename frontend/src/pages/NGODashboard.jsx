@@ -159,7 +159,7 @@ const NGODashboard = () => {
     // Available Tab
     donations.length === 0 ? <div className="glass p-12 text-center rounded-3xl">
             <p className="text-gray-500 dark:text-gray-400 text-lg">{t('ngo_dashboard.no_available')}</p>
-          </div> : viewMode === 'map' ? <RadarMapComponent markers={mapMarkers} className="h-[600px]" /> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </div> : viewMode === 'map' ? <RadarMapComponent markers={mapMarkers} className="h-[400px] lg:h-[600px]" /> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {donations.map((donation, index) => {
         const urgent = isUrgent(donation.expiryTime);
         return <motion.div initial={{

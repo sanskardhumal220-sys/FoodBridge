@@ -138,7 +138,7 @@ const Home = () => {
               duration: 0.7,
               delay: 0.2,
               type: 'spring'
-            }} className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
+            }} className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
                 {t('home.hero_title')} <span className="text-gradient relative inline-block">
                   {t('home.hero_highlight')}
                   <motion.svg className="absolute w-full h-3 -bottom-2 left-0 text-primary-400" viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -228,7 +228,7 @@ const Home = () => {
           <motion.div initial="hidden" whileInView="visible" viewport={{
           once: true,
           margin: "-50px"
-        }} variants={containerVariants} className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        }} variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[{
             label: 'Meals Rescued',
             value: stats.mealsRescued.toString()
@@ -269,15 +269,15 @@ const Home = () => {
           <motion.div initial="hidden" whileInView="visible" viewport={{
           once: true,
           margin: "-100px"
-        }} variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[250px]">
+        }} variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min md:auto-rows-[250px]">
             <div className="lg:col-span-2 lg:row-span-2">
-              <FeatureCard icon={<Leaf className="w-12 h-12 text-primary-500" />} title={t('home.feat1_title')} description={t('home.feat1_desc')} variants={itemVariants} className="h-full flex flex-col justify-center bg-gradient-to-br from-primary-50 to-white dark:from-primary-900/20 dark:to-[#0f0f0f]" />
+              <FeatureCard icon={<Leaf className="w-12 h-12 text-primary-500" />} title={t('home.feat1_title')} description={t('home.feat1_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-primary-50 to-white dark:from-primary-900/20 dark:to-[#0f0f0f]" />
             </div>
             <div className="lg:col-span-1 lg:row-span-1">
-              <FeatureCard icon={<MapPin className="w-8 h-8 text-accent-500" />} title={t('home.feat2_title')} description={t('home.feat2_desc')} variants={itemVariants} className="h-full bg-gradient-to-br from-accent-50 to-white dark:from-accent-900/20 dark:to-[#0f0f0f]" />
+              <FeatureCard icon={<MapPin className="w-8 h-8 text-accent-500" />} title={t('home.feat2_title')} description={t('home.feat2_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-accent-50 to-white dark:from-accent-900/20 dark:to-[#0f0f0f]" />
             </div>
             <div className="lg:col-span-1 lg:row-span-1">
-              <FeatureCard icon={<HeartHandshake className="w-8 h-8 text-blue-500" />} title={t('home.feat3_title')} description={t('home.feat3_desc')} variants={itemVariants} className="h-full bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-[#0f0f0f]" />
+              <FeatureCard icon={<HeartHandshake className="w-8 h-8 text-blue-500" />} title={t('home.feat3_title')} description={t('home.feat3_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-[#0f0f0f]" />
             </div>
           </motion.div>
         </div>
