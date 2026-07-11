@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import CountUp from 'react-countup';
+
 
 const HomeStats = () => {
   const stats = [
@@ -33,14 +33,7 @@ const HomeStats = () => {
         {stats.map((stat, i) => (
           <motion.div key={i} variants={itemVariants} className="flex flex-col items-center justify-center">
             <div className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400 mb-2 drop-shadow-sm flex items-center justify-center">
-              <CountUp 
-                end={stat.value} 
-                duration={3} 
-                separator="," 
-                enableScrollSpy 
-                scrollSpyOnce
-              />
-              <span>{stat.suffix}</span>
+              <span>{stat.value}{stat.suffix}</span>
             </div>
             <div className="text-primary-400 font-bold tracking-wider text-sm uppercase opacity-90">
               {stat.label}
