@@ -73,38 +73,38 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group">
             <motion.img 
               whileHover={{ rotate: 10, scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 300 }}
               src="/logo.png" 
               alt="FoodBridge Logo" 
-              className="h-10 w-auto rounded-lg object-cover shadow-sm group-hover:shadow-primary-500/50 transition-shadow" 
+              className="h-8 sm:h-10 w-auto rounded-lg object-cover shadow-sm group-hover:shadow-primary-500/50 transition-shadow" 
             />
-            <span className="font-extrabold text-2xl tracking-tight text-gradient">
+            <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-gradient hidden sm:block">
               FoodBridge
             </span>
           </Link>
-          <div className="flex space-x-4 items-center">
+          <div className="flex space-x-1 sm:space-x-4 items-center">
             
             {/* Dark Mode Toggle */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: isDarkMode ? -15 : 15 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
+              className="p-1.5 sm:p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
             >
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              {isDarkMode ? <Sun size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Moon size={16} className="sm:w-[18px] sm:h-[18px]" />}
             </motion.button>            {/* Language Switcher */}
             <motion.div 
               whileHover={{ scale: 1.02 }}
-              className="flex items-center text-gray-600 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg px-2 py-1 mr-2 border border-gray-200 dark:border-gray-700 hover:border-primary-300 transition-colors"
+              className="flex items-center text-gray-600 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg px-1 sm:px-2 py-1 mr-0 sm:mr-2 border border-gray-200 dark:border-gray-700 hover:border-primary-300 transition-colors"
             >
-              <Globe size={16} className="mr-2 text-primary-500" />
+              <Globe size={14} className="mr-1 sm:mr-2 text-primary-500 sm:w-[16px] sm:h-[16px]" />
               <select 
                 onChange={changeLanguage} 
                 defaultValue={i18n.language || 'en'}
-                className="bg-transparent text-sm font-medium outline-none cursor-pointer"
+                className="bg-transparent text-xs sm:text-sm font-medium outline-none cursor-pointer w-[65px] sm:w-auto"
               >
                 <option value="en">English</option>
                 <option value="hi">हिंदी (Hindi)</option>
@@ -117,41 +117,41 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block mr-2 font-medium">
+                <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block mr-2 font-medium">
                   {t('navbar.welcome')}, <span className="text-gray-800 dark:text-gray-200">{user.name}</span>
                 </span>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
-                    <LayoutDashboard size={18} />
-                    {t('navbar.dashboard')}
+                  <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-sm sm:text-base font-medium transition-all flex items-center gap-1 sm:gap-2">
+                    <LayoutDashboard size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden sm:inline">{t('navbar.dashboard')}</span>
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link to="/settings" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
-                    <SettingsIcon size={18} />
-                    Settings
+                  <Link to="/settings" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-sm sm:text-base font-medium transition-all flex items-center gap-1 sm:gap-2">
+                    <SettingsIcon size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span className="hidden sm:inline">Settings</span>
                   </Link>
                 </motion.div>
                 <motion.button 
                   whileHover={{ scale: 1.05, backgroundColor: 'rgba(239, 68, 68, 0.1)' }} 
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLogout} 
-                  className="text-red-500 hover:text-red-600 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2"
+                  className="text-red-500 hover:text-red-600 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-sm sm:text-base font-medium transition-all flex items-center gap-1 sm:gap-2"
                 >
-                  <LogOut size={18} />
-                  {t('navbar.logout')}
+                  <LogOut size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <span className="hidden sm:inline">{t('navbar.logout')}</span>
                 </motion.button>
               </>
             ) : (
               <>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative group">
-                  <Link to="/login" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-3 py-2 rounded-md font-medium transition-colors">
+                  <Link to="/login" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-sm sm:text-base font-medium transition-colors">
                     {t('navbar.login')}
                     <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary-500 group-hover:w-1/2 transition-all duration-300"></span>
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-                  <Link to="/register" className="glow-border bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-lg shadow-primary-500/30 flex items-center justify-center">
+                  <Link to="/register" className="glow-border bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full text-sm sm:text-base font-medium transition-all shadow-lg shadow-primary-500/30 flex items-center justify-center whitespace-nowrap">
                     {t('navbar.join')}
                   </Link>
                 </motion.div>
