@@ -22,7 +22,8 @@ const LocationMarker = ({ setPosition, position }) => {
     },
   });
 
-  // Automatically request location when map loads
+  // Automatic location via map.locate is sometimes blocked or fails silently
+  // We'll rely on a manual effect in the parent component instead
   useEffect(() => {
     map.locate();
   }, [map]);
@@ -64,14 +65,30 @@ const MapComponent = ({ onLocationSelect }) => {
         },
         (err) => {
           console.error('Geolocation error:', err);
-          alert('Could not get location. Please click on the map.');
+          alert('Could not get location automatically. Please click on the map to set your location.');
         },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
       alert('Geolocation is not supported by your browser.');
     }
   };
+
+  // Try to automatically get location on component mount using standard browser API
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          handlePosition(latlng);
+        },
+        (err) => {
+          console.error('Automatic geolocation error:', err);
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    }
+  }, []);
 
   return (
     <div className="flex flex-col gap-2">
