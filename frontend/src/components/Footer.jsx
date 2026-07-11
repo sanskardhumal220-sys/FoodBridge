@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center space-x-3 mb-4">
-              <img src="/logo.png" alt="FoodBridge Logo" className="h-8 w-auto rounded-lg object-cover" />
+              <img src="/logo.png" alt="FoodBridge Logo" className="h-8 w-8 rounded-full object-contain p-1 bg-white shadow-sm" />
               <span className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500">
                 FoodBridge
               </span>

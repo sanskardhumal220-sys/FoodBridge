@@ -56,7 +56,7 @@ const Navbar = () => {
               transition={{ type: 'spring', stiffness: 300 }}
               src="/logo.png" 
               alt="FoodBridge Logo" 
-              className="h-10 w-auto rounded-lg object-cover shadow-sm group-hover:shadow-primary-500/50 transition-shadow" 
+              className="h-10 w-10 rounded-full object-contain p-1 shadow-sm group-hover:shadow-primary-500/50 transition-shadow bg-white" 
             />
             <span className="font-extrabold text-2xl tracking-tight text-gradient">
               FoodBridge
