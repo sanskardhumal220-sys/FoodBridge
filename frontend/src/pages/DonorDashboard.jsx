@@ -252,10 +252,10 @@ const DonorDashboard = () => {
   }));
   return <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h2 className="text-3xl font-bold dark:text-white">{t('donor_dashboard.title')}</h2>
+        <h2 className="text-3xl font-bold dark:text-white text-center sm:text-left w-full sm:w-auto">{t('donor_dashboard.title')}</h2>
         
         {/* Tabs */}
-        <div className="bg-white dark:bg-gray-800 p-1 rounded-xl flex shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto">
+        <div className="w-full sm:w-auto bg-white dark:bg-gray-800 p-1 rounded-xl flex shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto no-scrollbar justify-start">
           <button onClick={() => setActiveTab('create')} className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'create' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
             {t('donor_dashboard.tab_create')}
           </button>

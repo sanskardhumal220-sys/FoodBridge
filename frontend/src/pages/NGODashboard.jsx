@@ -131,10 +131,10 @@ const NGODashboard = () => {
   }));
   return <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <h2 className="text-3xl font-bold dark:text-white">{t('ngo_dashboard.title')}</h2>
+        <h2 className="text-3xl font-bold dark:text-white text-center sm:text-left w-full sm:w-auto">{t('ngo_dashboard.title')}</h2>
         
         {/* Tabs */}
-        <div className="bg-white dark:bg-gray-800 p-1 rounded-xl flex shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="w-full sm:w-auto bg-white dark:bg-gray-800 p-1 rounded-xl flex shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto no-scrollbar justify-start">
           <button onClick={() => setActiveTab('available')} className={`px-6 py-2 rounded-lg font-medium transition-all ${activeTab === 'available' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
             {t('ngo_dashboard.tab_available')}
           </button>
