@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Camera, Send, CheckCircle, MapPin, Clock, MessageCircle, Truck, Navigation, Sparkles, TrendingUp, Heart, Leaf } from 'lucide-react';
+import { Camera, Send, CheckCircle, MapPin, Clock, MessageCircle, Truck, Navigation, Sparkles } from 'lucide-react';
 import MapComponent from '../components/MapComponent';
 import { motion, AnimatePresence } from 'framer-motion';
 import { triggerNotification } from '../components/ToastProvider';
@@ -12,21 +12,9 @@ import VerifiedBadge from '../components/VerifiedBadge';
 import { useTranslation } from 'react-i18next';
 import { rankNGOs } from '../utils/distance';
 import { Star, Package } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-
-const chartData = [
-  { name: 'Mon', donations: 4, meals: 20 },
-  { name: 'Tue', donations: 3, meals: 15 },
-  { name: 'Wed', donations: 7, meals: 35 },
-  { name: 'Thu', donations: 5, meals: 25 },
-  { name: 'Fri', donations: 8, meals: 40 },
-  { name: 'Sat', donations: 12, meals: 60 },
-  { name: 'Sun', donations: 15, meals: 75 },
-];
-
 const DonorDashboard = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'create' | 'my_donations' | 'nearby_ngos'
+  const [activeTab, setActiveTab] = useState('create'); // 'create' | 'my_donations' | 'nearby_ngos'
 
   // Creation Flow State
   const [step, setStep] = useState(1);
@@ -59,10 +47,9 @@ const DonorDashboard = () => {
   const [donorLocation, setDonorLocation] = useState({
     lat: 26.2183,
     lng: 78.1828
-  });
+  }); // Default: Gwalior, MP
   const [recommendedNgos, setRecommendedNgos] = useState([]);
   const [selectedNgo, setSelectedNgo] = useState(null);
-
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('userInfo')) || {
       name: 'Demo Donor',
@@ -73,46 +60,62 @@ const DonorDashboard = () => {
       fetchMyDonations(user._id, user.token);
     }
   }, [activeTab]);
-
   const fetchMyDonations = async (userId, token) => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/donations?donor=${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const {
+        data
+      } = await axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?donor=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       setMyDonations(data);
     } catch (error) {
       console.error('Failed to fetch donations', error);
     }
   };
-
   const handleImageUpload = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFormData({ ...formData, image: reader.result });
+      setFormData({
+        ...formData,
+        image: reader.result
+      });
     };
     if (file) reader.readAsDataURL(file);
   };
-
   const handleLocation = (lat, lng, address) => {
-    setFormData(prev => ({ ...prev, lat, lng, address: address || 'Fetching address...' }));
+    setFormData(prev => ({
+      ...prev,
+      lat,
+      lng,
+      address: address || 'Fetching address...'
+    }));
   };
-
   const submitDonation = async e => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations', {
+      const {
+        data
+      } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations', {
         foodType: formData.foodType,
         quantity: `${formData.quantity} ${formData.unit}`,
         prepTime: formData.prepTime,
         expiryTime: formData.expiryTime,
-        location: { lat: formData.lat, lng: formData.lng, address: formData.address },
+        location: {
+          lat: formData.lat,
+          lng: formData.lng,
+          address: formData.address
+        },
         image: formData.image,
         foodBrainData: aiResult,
         targetedNgoName: selectedNgo ? selectedNgo.name : null
       }, {
-        headers: { Authorization: `Bearer ${userInfo.token}` }
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
       });
       setAiResult(data.foodBrainData);
       setStep(3);
@@ -122,16 +125,19 @@ const DonorDashboard = () => {
     }
     setLoading(false);
   };
-
   const analyzeFreshness = async () => {
     if (!formData.image) return alert('Please upload an image first');
     setIsAnalyzing(true);
     try {
-      const { data } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations/analyze', {
+      const {
+        data
+      } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations/analyze', {
         image: formData.image,
         quantity: formData.quantity ? `${formData.quantity} ${formData.unit}` : undefined
       }, {
-        headers: { Authorization: `Bearer ${userInfo.token}` }
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        }
       });
       setAiResult(data.foodBrainData);
       setFormData(prev => ({
@@ -147,198 +153,430 @@ const DonorDashboard = () => {
     }
     setIsAnalyzing(false);
   };
-
   const openChat = id => {
     setSelectedDonationId(id);
     setIsChatOpen(true);
   };
 
-  const mockNgos = [
-    { id: 'g1', lat: 26.2183, lng: 78.1828, name: 'Ramakrishna Mission', needed: 'Grains, Cooked Food', urgency: 'High', capacity: 500, verified: true, trustScore: 98 },
-    { id: 'g2', lat: 26.2300, lng: 78.1900, name: 'Narayan Seva Sansthan', needed: 'Fresh Produce', urgency: 'Medium', capacity: 200, verified: true, trustScore: 95 },
-  ];
-
+  // Mock NGOs for Radar Map & Recommendations
+  const mockNgos = [{
+    id: 'g1',
+    lat: 26.2183,
+    lng: 78.1828,
+    name: 'Ramakrishna Mission Ashrama Sharada Balgram',
+    needed: 'Grains, Cooked Food',
+    urgency: 'High',
+    capacity: 500,
+    verified: true,
+    trustScore: 98
+  }, {
+    id: 'g2',
+    lat: 26.2300,
+    lng: 78.1900,
+    name: 'Narayan Seva Sansthan',
+    needed: 'Fresh Produce',
+    urgency: 'Medium',
+    capacity: 200,
+    verified: true,
+    trustScore: 95
+  }, {
+    id: 'g3',
+    lat: 26.2050,
+    lng: 78.1650,
+    name: 'The Power Of Education Foundations',
+    needed: 'Leftover Meals',
+    urgency: 'Low',
+    capacity: 150,
+    verified: false,
+    trustScore: 80
+  }, {
+    id: 'g4',
+    lat: 26.2350,
+    lng: 78.2250,
+    name: 'Dada Maharaj Ashram',
+    needed: 'Bulk Rice & Dal',
+    urgency: 'High',
+    capacity: 1000,
+    verified: true,
+    trustScore: 99
+  }, {
+    id: 'g5',
+    lat: 26.2500,
+    lng: 78.1750,
+    name: 'Vaibhav Foundation India',
+    needed: 'Canned Goods',
+    urgency: 'Medium',
+    capacity: 300,
+    verified: false,
+    trustScore: 85
+  }, {
+    id: 'g6',
+    lat: 26.2100,
+    lng: 78.1950,
+    name: 'Youthpray Foundation',
+    needed: 'Fresh Produce',
+    urgency: 'Low',
+    capacity: 100,
+    verified: true,
+    trustScore: 92
+  }];
   useEffect(() => {
     if (activeTab === 'nearby_ngos') {
-      const ranked = rankNGOs(mockNgos, donorLocation, 0);
+      const ranked = rankNGOs(mockNgos, donorLocation, 0); // using 0 for generic recommendation
       setRecommendedNgos(ranked);
     }
   }, [activeTab, donorLocation]);
-
   const handleLocateDonor = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(pos => {
-        setDonorLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setDonorLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
       }, () => {
         alert("Couldn't fetch location. Using default.");
       });
     }
   };
-
   const ngoMarkers = recommendedNgos.map(ngo => ({
-    id: ngo.id, lat: ngo.lat, lng: ngo.lng, title: ngo.name, subtitle: `Needed: ${ngo.needed} • ${ngo.distance} km away`, isUrgent: ngo.urgency === 'High',
-    popupContent: <button className="w-full bg-primary-500 text-white py-1 rounded text-xs font-bold mt-2 hover:bg-primary-600 transition-colors" onClick={() => { setSelectedNgo(ngo); setActiveTab('create'); }}>Donate to NGO</button>
+    id: ngo.id,
+    lat: ngo.lat,
+    lng: ngo.lng,
+    title: ngo.name,
+    subtitle: `Needed: ${ngo.needed} • ${ngo.distance} km away`,
+    isUrgent: ngo.urgency === 'High',
+    popupContent: <button className="w-full bg-primary-500 text-white py-1 rounded text-xs font-bold mt-2 hover:bg-primary-600 transition-colors" onClick={() => {
+      setSelectedNgo(ngo);
+      setActiveTab('create');
+    }}>{t("donor_dashboard.text1")}</button>
   }));
-
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-28">
-      <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 gap-4">
-        <div>
-          <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white">Donor Dashboard</h2>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your surplus food donations and track impact.</p>
-        </div>
+  return <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+        <h2 className="text-3xl font-bold dark:text-white">{t('donor_dashboard.title')}</h2>
         
-        {/* Modern Pills Tabs */}
-        <div className="glass-card p-1.5 rounded-2xl flex shadow-xl border border-white/40 dark:border-gray-800 w-full md:w-auto overflow-x-auto">
-          {['overview', 'create', 'my_donations', 'nearby_ngos'].map((tab) => (
-            <button 
-              key={tab}
-              onClick={() => setActiveTab(tab)} 
-              className={`px-5 py-2.5 rounded-xl font-bold transition-all whitespace-nowrap capitalize ${activeTab === tab ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'}`}
-            >
-              {tab.replace('_', ' ')}
-            </button>
-          ))}
+        {/* Tabs */}
+        <div className="bg-white dark:bg-gray-800 p-1 rounded-xl flex shadow-sm border border-gray-200 dark:border-gray-700 overflow-x-auto">
+          <button onClick={() => setActiveTab('create')} className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'create' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+            {t('donor_dashboard.tab_create')}
+          </button>
+          <button onClick={() => setActiveTab('my_donations')} className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'my_donations' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+            {t('donor_dashboard.tab_my_donations')}
+          </button>
+          <button onClick={() => setActiveTab('nearby_ngos')} className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${activeTab === 'nearby_ngos' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+            {t('donor_dashboard.tab_nearby')}
+          </button>
         </div>
       </div>
       
-      {activeTab === 'overview' && (
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-gray-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-2xl group-hover:bg-primary-500/20 transition-all -mr-10 -mt-10"></div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center text-primary-500"><Package size={24}/></div>
-                <h3 className="text-gray-500 dark:text-gray-400 font-semibold">Total Donations</h3>
+      {activeTab === 'create' && <div className="max-w-4xl mx-auto">
+          {step === 1 && <motion.div initial={{
+        opacity: 0
+      }} animate={{
+        opacity: 1
+      }} className="glass p-8 rounded-3xl">
+              <h3 className="text-xl font-semibold mb-6 flex items-center gap-2 dark:text-white">
+                <Camera className="text-primary-500" /> {t('donor_dashboard.upload_image')}
+              </h3>
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-12 text-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer relative">
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                {formData.image ? <img src={formData.image} alt="Preview" className="mx-auto max-h-64 rounded-lg" /> : <div className="text-gray-500 dark:text-gray-400">
+                    <p className="mb-2">{t('donor_dashboard.click_drag')}</p>
+                    <p className="text-sm">{t('donor_dashboard.ai_analyze')}</p>
+                  </div>}
               </div>
-              <div className="text-4xl font-black text-gray-900 dark:text-white">54</div>
-              <div className="text-sm font-semibold text-green-500 mt-2 flex items-center gap-1"><TrendingUp size={14}/> +12% this month</div>
-            </motion.div>
-            
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-gray-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent-500/10 rounded-full blur-2xl group-hover:bg-accent-500/20 transition-all -mr-10 -mt-10"></div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-accent-100 dark:bg-accent-900/50 flex items-center justify-center text-accent-500"><Heart size={24}/></div>
-                <h3 className="text-gray-500 dark:text-gray-400 font-semibold">Meals Shared</h3>
-              </div>
-              <div className="text-4xl font-black text-gray-900 dark:text-white">270</div>
-              <div className="text-sm font-semibold text-green-500 mt-2 flex items-center gap-1"><TrendingUp size={14}/> +45% this month</div>
-            </motion.div>
+              <button onClick={analyzeFreshness} disabled={isAnalyzing || !formData.image} className="mt-6 w-full bg-primary-500 hover:bg-primary-600 disabled:bg-primary-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                {isAnalyzing ? <span className="animate-pulse">{t("donor_dashboard.text2")}</span> : <><Sparkles size={18} />{t("donor_dashboard.text3")}</>}
+              </button>
+              <button onClick={() => setStep(2)} className="mt-4 w-full bg-transparent border-2 border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">{t("donor_dashboard.text4")}</button>
+            </motion.div>}
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-gray-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all -mr-10 -mt-10"></div>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-500"><Leaf size={24}/></div>
-                <h3 className="text-gray-500 dark:text-gray-400 font-semibold">CO2 Prevented</h3>
+          {step === 2 && <motion.form initial={{
+        opacity: 0
+      }} animate={{
+        opacity: 1
+      }} onSubmit={submitDonation} className="glass p-8 rounded-3xl space-y-6">
+              
+              {selectedNgo && <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-800 p-4 rounded-2xl flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">{t("donor_dashboard.text5")}</p>
+                    <h4 className="text-lg font-bold text-emerald-900 dark:text-emerald-100">{selectedNgo.name}</h4>
+                  </div>
+                  <button type="button" onClick={() => setSelectedNgo(null)} className="text-xs text-emerald-600 hover:text-emerald-700 bg-emerald-100/50 px-3 py-1.5 rounded-lg font-semibold">{t("donor_dashboard.text6")}</button>
+                </div>}
+
+              <h3 className="text-xl font-semibold dark:text-white">{t('donor_dashboard.details_title')}</h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.food_type')}</label>
+                  <input type="text" required value={formData.foodType} onChange={e => setFormData({
+              ...formData,
+              foodType: e.target.value
+            })} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder={t('donor_dashboard.food_type_ph')} />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.quantity')}</label>
+                  <div className="flex gap-2">
+                    <input type="number" required value={formData.quantity} onChange={e => setFormData({
+                ...formData,
+                quantity: e.target.value
+              })} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="10" />
+                    <select value={formData.unit} onChange={e => setFormData({
+                ...formData,
+                unit: e.target.value
+              })} className="px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white bg-white">
+                      <option value="kg">{t("donor_dashboard.text7")}</option>
+                      <option value="pieces">{t("donor_dashboard.text8")}</option>
+                      <option value="packets">{t("donor_dashboard.text9")}</option>
+                      <option value="servings">{t("donor_dashboard.text10")}</option>
+                      <option value="liters">{t("donor_dashboard.text11")}</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.prep_time')}</label>
+                  <input type="datetime-local" required onChange={e => setFormData({
+              ...formData,
+              prepTime: e.target.value
+            })} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.expiry_time')}</label>
+                  <input type="datetime-local" required onChange={e => setFormData({
+              ...formData,
+              expiryTime: e.target.value
+            })} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
+                </div>
               </div>
-              <div className="text-4xl font-black text-gray-900 dark:text-white">1.2<span className="text-2xl text-gray-400 ml-1">Tons</span></div>
-              <div className="text-sm font-semibold text-green-500 mt-2 flex items-center gap-1"><TrendingUp size={14}/> +8% this month</div>
-            </motion.div>
+              <div>
+                <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.pickup_location')}</label>
+                <div className="mb-3 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg flex items-start gap-2 border border-gray-200 dark:border-gray-700">
+                  <MapPin className="text-primary-500 shrink-0 mt-0.5" size={16} />
+                  <span>{formData.address ? formData.address : t('donor_dashboard.select_location')}</span>
+                </div>
+                <MapComponent onLocationSelect={handleLocation} />
+              </div>
+
+              {aiResult && <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <h4 className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
+                        <Sparkles className="text-indigo-500" size={18} />{t("donor_dashboard.text12")}</h4>
+                      <p className="text-sm text-indigo-700/80 dark:text-indigo-400/80 mt-1">{t("donor_dashboard.text13")}</p>
+                    </div>
+                    <FreshnessBadge foodBrainData={aiResult} showDetails={true} />
+                  </div>
+                </div>}
+
+              <button type="submit" disabled={loading || !formData.lat} className="w-full bg-primary-500 flex items-center justify-center gap-2 hover:bg-primary-600 disabled:bg-primary-300 text-white py-3 rounded-xl font-semibold transition-colors">
+                {loading ? t('donor_dashboard.analyzing') : <><Send size={20} /> {t('donor_dashboard.submit_rescue')}</>}
+              </button>
+            </motion.form>}
+
+          {step === 3 && <motion.div initial={{
+        scale: 0.9,
+        opacity: 0
+      }} animate={{
+        scale: 1,
+        opacity: 1
+      }} className="glass p-8 rounded-3xl text-center">
+              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle size={40} />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('donor_dashboard.success_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-8">{t('donor_dashboard.success_desc')}</p>
+              
+              {aiResult && <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.peopleFed}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.people_fed')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.freshnessScore}%</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.freshness')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.safetyScore}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.safety_rating')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.co2Saved.toFixed(1)}{t("donor_dashboard.text14")}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.co2_saved')}</div>
+                  </div>
+                </div>}
+              
+              <div className="flex justify-center gap-4">
+                <button onClick={() => {
+            setStep(1);
+            setFormData({
+              ...formData,
+              image: ''
+            });
+            setAiResult(null);
+          }} className="px-6 py-2 border-2 border-primary-500 text-primary-500 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                  {t('donor_dashboard.make_another')}
+                </button>
+                <button onClick={() => setActiveTab('my_donations')} className="px-6 py-2 bg-primary-500 text-white rounded-xl font-semibold hover:bg-primary-600 transition-colors">
+                  {t('donor_dashboard.view_my_donations')}
+                </button>
+              </div>
+            </motion.div>}
+        </div>}
+
+      {activeTab === 'my_donations' && <div className="space-y-6">
+          {myDonations.length === 0 ? <div className="glass p-12 text-center rounded-3xl">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">{t('donor_dashboard.no_donations')}</p>
+              <button onClick={() => setActiveTab('create')} className="mt-4 text-primary-500 font-medium hover:underline">
+                {t('donor_dashboard.start_rescuing')}
+              </button>
+            </div> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {myDonations.map((donation, index) => <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          delay: index * 0.1
+        }} whileHover={{
+          y: -5,
+          scale: 1.02
+        }} key={donation._id} className="glass-card rounded-3xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700 hover:shadow-2xl hover:shadow-primary-500/10 transition-shadow">
+                  <div className="relative">
+                    {donation.image ? <img src={donation.image} alt={donation.foodType} className="w-full h-48 object-cover" /> : <div className="w-full h-48 bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-400">{t('donor_dashboard.no_image')}</div>}
+                    {/* Status Badge */}
+                    <motion.div whileHover={{
+              scale: 1.05
+            }} className="absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-md capitalize cursor-default">
+                      {donation.status === 'PickedUp' ? 'On the Way 🚚' : donation.status === 'Completed' ? 'Delivered ✅' : t(`status_${donation.status}`, {
+                defaultValue: donation.status.replace('_', ' ')
+              })}
+                    </motion.div>
+                  </div>
+                  <div className="p-6 flex-grow flex flex-col">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-bold dark:text-white">{donation.foodType}</h3>
+                      {donation.foodBrainData && <FreshnessBadge foodBrainData={donation.foodBrainData} />}
+                    </div>
+                    
+                    <div className="space-y-2 mb-6 flex-grow">
+                      <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                        <Clock size={16} className="mr-2 text-primary-500" />
+                        <span>{t('donor_dashboard.expires')} {new Date(donation.expiryTime).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}</span>
+                      </div>
+                      {(donation.status === 'accepted' || donation.status === 'picked_up') && <div className="flex items-center text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 p-2 rounded-lg mt-2">
+                          <CheckCircle size={16} className="mr-2" />
+                          <span>{t('donor_dashboard.rescued_waiting')}</span>
+                        </div>}
+                    </div>
+
+                    <motion.button whileHover={{
+              scale: 1.02
+            }} whileTap={{
+              scale: 0.98
+            }} onClick={() => openChat(donation._id)} className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-400 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 border border-indigo-200 dark:border-indigo-800">
+                      <MessageCircle size={20} /> {t('volunteer_dashboard.open_chat')}
+                    </motion.button>
+                    
+                    {donation.status === 'PickedUp' && <motion.button whileHover={{
+              scale: 1.02
+            }} whileTap={{
+              scale: 0.98
+            }} onClick={() => setTrackingDonation(donation)} className="w-full mt-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30">
+                        <Navigation size={20} />{t("donor_dashboard.text15")}</motion.button>}
+                  </div>
+                </motion.div>)}
+            </div>}
+        </div>}
+
+      {activeTab === 'nearby_ngos' && <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-1 glass p-6 rounded-3xl flex flex-col h-[700px]">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="text-2xl font-bold dark:text-white">{t('donor_dashboard.nearby_title')}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{t('donor_dashboard.nearby_desc')}</p>
+              </div>
+              <button onClick={handleLocateDonor} className="bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
+                <MapPin size={16} />{t("donor_dashboard.text16")}</button>
+            </div>
+            <div className="flex-grow rounded-2xl overflow-hidden relative">
+              <RadarMapComponent markers={ngoMarkers} donorLocation={donorLocation} center={[donorLocation.lat, donorLocation.lng]} zoom={11} className="h-full w-full absolute inset-0" />
+            </div>
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-6 rounded-3xl border border-gray-200 dark:border-gray-800">
-            <h3 className="text-xl font-bold dark:text-white mb-6">Impact History</h3>
-            <div className="h-[350px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorMeals" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} opacity={0.2} />
-                  <XAxis dataKey="name" stroke="#6b7280" axisLine={false} tickLine={false} />
-                  <YAxis stroke="#6b7280" axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#1f2937', borderRadius: '12px', border: 'none', color: '#fff' }} />
-                  <Area type="monotone" dataKey="meals" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorMeals)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {activeTab === 'create' && <div className="max-w-4xl mx-auto">
-        {/* Creating Flow ... Using the previous logic but with premium styling */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 md:p-12 rounded-[2.5rem]">
-          {step === 1 && (
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-100 dark:bg-primary-900/30 text-primary-500 rounded-3xl mb-6">
-                <Camera size={36} />
-              </div>
-              <h3 className="text-3xl font-extrabold mb-4 dark:text-white">Upload Food Image</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-lg mx-auto">Let FoodBrain AI analyze the freshness and quantity of your surplus food instantly.</p>
-              
-              <div className="border-3 border-dashed border-primary-200 dark:border-primary-900/50 rounded-3xl p-12 text-center hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors cursor-pointer relative group">
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                {formData.image ? (
-                  <img src={formData.image} alt="Preview" className="mx-auto max-h-72 rounded-2xl shadow-lg" />
-                ) : (
-                  <div className="text-primary-400">
-                    <Camera size={48} className="mx-auto mb-4 opacity-50 group-hover:scale-110 transition-transform" />
-                    <p className="font-bold text-lg">Click to browse or drag & drop</p>
-                    <p className="text-sm opacity-70 mt-1">Supports JPG, PNG (Max 5MB)</p>
+          <div className="lg:w-96 glass p-6 rounded-3xl h-[700px] flex flex-col overflow-hidden">
+            <h3 className="text-xl font-bold dark:text-white mb-4 flex items-center gap-2">
+              <Star className="text-accent-500" />{t("donor_dashboard.text17")}</h3>
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+              {recommendedNgos.map((ngo, idx) => <motion.div initial={{
+            opacity: 0,
+            x: 20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: idx * 0.1
+          }} key={ngo.id} className={`p-4 rounded-2xl border ${idx === 0 ? 'bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary-900/20 dark:to-transparent border-primary-200 dark:border-primary-800 shadow-md' : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800'}`}>
+                  {idx === 0 && <div className="flex items-center gap-1 text-xs font-bold text-primary-600 dark:text-primary-400 mb-2 bg-primary-100 dark:bg-primary-900/40 w-max px-2 py-1 rounded-full uppercase tracking-wider">
+                      <Sparkles size={12} />{t("donor_dashboard.text18")}</div>}
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold text-gray-900 dark:text-white">{ngo.name}</h4>
+                      {ngo.verified && <VerifiedBadge />}
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${ngo.urgency === 'High' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : ngo.urgency === 'Medium' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
+                      {ngo.urgency}{t("donor_dashboard.text19")}</span>
                   </div>
-                )}
-              </div>
-              
-              <button onClick={analyzeFreshness} disabled={isAnalyzing || !formData.image} className="mt-8 w-full md:w-auto md:px-12 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-300 text-white py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-3 mx-auto shadow-xl shadow-primary-500/20 hover:shadow-primary-500/40 hover:-translate-y-1">
-                {isAnalyzing ? <span className="animate-pulse">Analyzing via AI...</span> : <><Sparkles size={22} /> Analyze Freshness</>}
-              </button>
+                  
+                  <div className="flex items-center gap-1 mb-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => <Star key={i} size={12} className={i < Math.round(ngo.trustScore / 20) ? "text-yellow-400 fill-yellow-400" : "text-gray-300 dark:text-gray-600"} />)}
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">({ngo.trustScore}{t("donor_dashboard.text20")}</span>
+                  </div>
+
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-1">{t("donor_dashboard.text21")}{ngo.needed}</p>
+                  
+                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700/50">
+                    <div className="flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      <Navigation size={14} className="text-blue-500" />
+                      {ngo.distance}{t("donor_dashboard.text22")}</div>
+                    <div className="flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      <Package size={14} className="text-accent-500" />
+                      {ngo.capacity}{t("donor_dashboard.text23")}</div>
+                  </div>
+                  
+                  <button onClick={() => {
+              setSelectedNgo(ngo);
+              setActiveTab('create');
+            }} className={`w-full mt-3 py-2 rounded-xl text-sm font-bold transition-colors ${idx === 0 ? 'bg-primary-500 text-white hover:bg-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}>{t("donor_dashboard.text24")}</button>
+                </motion.div>)}
             </div>
-          )}
+          </div>
+        </div>}
 
-          {step === 2 && (
-             <form onSubmit={submitDonation} className="space-y-8">
-               {/* Form Content - kept minimal for brevity, same logic as before */}
-               <h3 className="text-3xl font-extrabold dark:text-white text-center mb-8">Confirm Details</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div>
-                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Food Type</label>
-                   <input type="text" required value={formData.foodType} onChange={e => setFormData({...formData, foodType: e.target.value})} className="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary-500 dark:text-white transition-all shadow-inner" />
-                 </div>
-                 <div>
-                   <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Quantity</label>
-                   <div className="flex gap-2">
-                     <input type="number" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})} className="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary-500 dark:text-white transition-all shadow-inner" />
-                     <select value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} className="px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-primary-500 dark:text-white transition-all shadow-inner font-bold">
-                       <option value="kg">kg</option>
-                       <option value="pieces">pieces</option>
-                     </select>
-                   </div>
-                 </div>
-               </div>
-               
-               <div>
-                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Pickup Location</label>
-                 <MapComponent onLocationSelect={handleLocation} />
-               </div>
+      {/* Chat Modal */}
+      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} donationId={selectedDonationId} currentUser={userInfo} />
 
-               <button type="submit" disabled={loading || !formData.lat} className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 text-white py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-3 shadow-xl hover:-translate-y-1">
-                 {loading ? 'Processing...' : <><Send size={22} /> Publish Donation</>}
-               </button>
-             </form>
-          )}
-
-          {step === 3 && (
-            <div className="text-center">
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} type="spring" className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/20">
-                <CheckCircle size={48} />
-              </motion.div>
-              <h3 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Rescue Initiated!</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 text-lg">Your surplus food is now visible to nearby NGOs and volunteers.</p>
-              <button onClick={() => setActiveTab('my_donations')} className="px-8 py-4 bg-primary-500 text-white rounded-full font-bold hover:bg-primary-600 transition-colors shadow-lg hover:-translate-y-1">
-                Track Donation Status
-              </button>
-            </div>
-          )}
-        </motion.div>
-      </div>}
-
-      {/* Tabs for My Donations and Nearby NGOs omitted for brevity, logic remains identical, styles adapt automatically due to global classes */}
-      
-    </div>
-  );
+      {/* Tracking Modal */}
+      <AnimatePresence>
+        {trackingDonation && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+            <motion.div initial={{
+          scale: 0.9,
+          opacity: 0
+        }} animate={{
+          scale: 1,
+          opacity: 1
+        }} exit={{
+          scale: 0.9,
+          opacity: 0
+        }} className="w-full max-w-5xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden">
+              <LiveTrackingMap donationId={trackingDonation._id} pickupLocation={trackingDonation.location} dropoffLocation={trackingDonation.acceptedBy?.location} isVolunteer={false} onClose={() => setTrackingDonation(null)} />
+            </motion.div>
+          </div>}
+      </AnimatePresence>
+    </div>;
 };
 export default DonorDashboard;

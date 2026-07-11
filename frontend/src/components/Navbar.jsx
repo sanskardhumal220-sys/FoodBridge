@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Utensils, LogOut, LayoutDashboard, Globe, Settings as SettingsIcon, BarChart2, Moon, Sun } from 'lucide-react';
+import { Utensils, LogOut, LayoutDashboard, Globe, Settings as SettingsIcon, BarChart2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -7,32 +7,8 @@ import { motion } from 'framer-motion';
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-
-  useEffect(() => {
-    // Check initial dark mode preference
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-      setIsDarkMode(true);
-    } else {
-      document.documentElement.classList.remove('dark');
-      setIsDarkMode(false);
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove('dark');
-      localStorage.theme = 'light';
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.theme = 'dark';
-      setIsDarkMode(true);
-    }
-  };
 
   useEffect(() => {
     const checkUser = () => {
@@ -86,16 +62,9 @@ const Navbar = () => {
             </span>
           </Link>
           <div className="flex space-x-4 items-center">
-            
-            {/* Dark Mode Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: isDarkMode ? -15 : 15 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
-            >
-              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </motion.button>            {/* Language Switcher */}
+
+
+            {/* Language Switcher */}
             <motion.div 
               whileHover={{ scale: 1.02 }}
               className="flex items-center text-gray-600 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg px-2 py-1 mr-2 border border-gray-200 dark:border-gray-700 hover:border-primary-300 transition-colors"
