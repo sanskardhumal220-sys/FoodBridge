@@ -4,7 +4,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const connectDB = async () => {
   try {
     // Try connecting to the provided URI first
-    const conn = await mongoose.connect(process.env.MONGODB_URI).catch(async (err) => {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI).catch(async (err) => {
       console.log('MongoDB connection failed with error:', err.message);
       console.log('Local MongoDB failed, starting in-memory MongoDB...');
       const mongoServer = await MongoMemoryServer.create();
