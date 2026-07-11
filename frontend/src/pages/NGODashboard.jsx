@@ -46,10 +46,10 @@ const NGODashboard = () => {
         queryParams.append('userLat', lat);
         queryParams.append('userLng', lng);
       }
-      const availableReq = axios.get(`http://localhost:5000/api/donations?${queryParams.toString()}`, {
+      const availableReq = axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?${queryParams.toString()}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
-      const rescuesReq = axios.get(`http://localhost:5000/api/donations?acceptedBy=${user._id}`, {
+      const rescuesReq = axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?acceptedBy=${user._id}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       
@@ -72,7 +72,7 @@ const NGODashboard = () => {
 
   const acceptDonation = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/donations/${id}/accept`, {}, {
+      await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/accept`, {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       fetchData(userInfo); // Refresh lists
@@ -96,7 +96,7 @@ const NGODashboard = () => {
 
   const verifyDelivery = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/donations/${id}/deliver`, {}, {
+      await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/deliver`, {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       fetchData(userInfo);
@@ -184,11 +184,12 @@ const NGODashboard = () => {
                 const urgent = isUrgent(donation.expiryTime);
                 return (
                 <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1, type: 'spring', stiffness: 100 }}
                   key={donation._id} 
-                  className={`glass rounded-3xl overflow-hidden flex flex-col border-2 transition-colors ${urgent ? 'border-red-500/70 shadow-lg shadow-red-500/20' : 'border-transparent hover:border-primary-500/30'}`}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className={`glass rounded-[2rem] overflow-hidden flex flex-col border-2 transition-all duration-300 ${urgent ? 'border-red-500/70 shadow-lg shadow-red-500/20 hover:shadow-red-500/40' : 'border-transparent hover:border-primary-500/30 hover:shadow-2xl hover:shadow-primary-500/20'}`}
                 >
                   <div className="relative">
                     {donation.image ? (
@@ -251,11 +252,12 @@ const NGODashboard = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {myRescues.map((donation, index) => (
               <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: index * 0.1, type: 'spring', stiffness: 100 }}
                 key={donation._id} 
-                className="glass rounded-3xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700"
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="glass rounded-[2rem] overflow-hidden flex flex-col border-2 border-transparent hover:border-primary-500/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary-500/20"
               >
                 <div className="relative">
                   {donation.image ? (

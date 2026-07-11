@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -16,30 +17,43 @@ import Support from './pages/Support';
 import Analytics from './pages/Analytics';
 import ToastProvider from './components/ToastProvider';
 import Footer from './components/Footer';
+import CustomCursor from './components/CustomCursor';
+import AnimatedPage from './components/AnimatedPage';
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<AnimatedPage><Home /></AnimatedPage>} />
+        <Route path="/about" element={<AnimatedPage><About /></AnimatedPage>} />
+        <Route path="/terms" element={<AnimatedPage><Terms /></AnimatedPage>} />
+        <Route path="/privacy" element={<AnimatedPage><Privacy /></AnimatedPage>} />
+        <Route path="/faq" element={<AnimatedPage><FAQ /></AnimatedPage>} />
+        <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />
+        <Route path="/feedback" element={<AnimatedPage><Feedback /></AnimatedPage>} />
+        <Route path="/report-issue" element={<AnimatedPage><ReportIssue /></AnimatedPage>} />
+        <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
+        <Route path="/register" element={<AnimatedPage><Register /></AnimatedPage>} />
+        <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
+        <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
+        <Route path="/support" element={<AnimatedPage><Support /></AnimatedPage>} />
+        <Route path="/analytics" element={<AnimatedPage><Analytics /></AnimatedPage>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+        <CustomCursor />
         <ToastProvider />
         <Navbar />
         <main className="flex-grow pt-16">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route path="/report-issue" element={<ReportIssue />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/analytics" element={<Analytics />} />
-          </Routes>
+          <AnimatedRoutes />
         </main>
         <Footer />
       </div>

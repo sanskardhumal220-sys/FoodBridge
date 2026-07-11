@@ -27,7 +27,7 @@ const ToastProvider = () => {
     window.addEventListener('app-notify', handleNotify);
 
     // Setup Socket.io client
-    const socket = io('http://localhost:5000');
+    const socket = io(import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '');
 
     socket.on('new_donation', (donation) => {
       triggerNotification(`🔔 New Food Rescue Available: ${donation.foodType}!`);

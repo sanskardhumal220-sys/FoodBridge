@@ -2,9 +2,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Utensils, LogOut, LayoutDashboard, Globe, Settings as SettingsIcon, BarChart2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -16,7 +18,16 @@ const Navbar = () => {
     
     checkUser();
     window.addEventListener('storage', checkUser);
-    return () => window.removeEventListener('storage', checkUser);
+    
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('storage', checkUser);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -30,24 +41,42 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full z-50 glass">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+      className={`fixed w-full z-50 transition-all duration-500 ${isScrolled ? 'glass shadow-lg dark:shadow-none py-3' : 'bg-transparent py-5'}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center space-x-3">
-            <img src="/logo.png" alt="FoodBridge Logo" className="h-10 w-auto rounded-lg object-cover" />
-            <span className="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500">
+        <div className="flex justify-between items-center">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <motion.img 
+              whileHover={{ rotate: 10, scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              src="/logo.png" 
+              alt="FoodBridge Logo" 
+              className="h-10 w-auto rounded-lg object-cover shadow-sm group-hover:shadow-primary-500/50 transition-shadow" 
+            />
+            <span className="font-extrabold text-2xl tracking-tight text-gradient">
               FoodBridge
             </span>
           </Link>
           <div className="flex space-x-4 items-center">
             
-            <Link to="/analytics" className="hidden sm:flex items-center text-gray-700 dark:text-gray-200 hover:text-primary-500 transition-colors font-medium text-sm">
-              <BarChart2 size={18} className="mr-1" />
-              Impact
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative group">
+              <Link to="/analytics" className="hidden sm:flex items-center text-gray-700 dark:text-gray-200 hover:text-primary-500 transition-colors font-medium text-sm">
+                <BarChart2 size={18} className="mr-1 group-hover:text-primary-500 transition-colors" />
+                Impact
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+            </motion.div>
+
 
             {/* Language Switcher */}
-            <div className="flex items-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg px-2 py-1 mr-2">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="flex items-center text-gray-600 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg px-2 py-1 mr-2 border border-gray-200 dark:border-gray-700 hover:border-primary-300 transition-colors"
+            >
               <Globe size={16} className="mr-2 text-primary-500" />
               <select 
                 onChange={changeLanguage} 
@@ -61,40 +90,54 @@ const Navbar = () => {
                 <option value="bn">বাংলা (Bengali)</option>
                 <option value="ta">தமிழ் (Tamil)</option>
               </select>
-            </div>
+            </motion.div>
 
             {user ? (
               <>
-                <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block mr-2">
-                  {t('navbar.welcome')}, {user.name}
+                <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block mr-2 font-medium">
+                  {t('navbar.welcome')}, <span className="text-gray-800 dark:text-gray-200">{user.name}</span>
                 </span>
-                <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-3 py-2 rounded-md font-medium transition-colors flex items-center gap-2">
-                  <LayoutDashboard size={18} />
-                  {t('navbar.dashboard')}
-                </Link>
-                <Link to="/settings" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-3 py-2 rounded-md font-medium transition-colors flex items-center gap-2">
-                  <SettingsIcon size={18} />
-                  Settings
-                </Link>
-                <button onClick={handleLogout} className="text-red-500 hover:text-red-600 px-3 py-2 rounded-md font-medium transition-colors flex items-center gap-2">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link to="/dashboard" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
+                    <LayoutDashboard size={18} />
+                    {t('navbar.dashboard')}
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link to="/settings" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
+                    <SettingsIcon size={18} />
+                    Settings
+                  </Link>
+                </motion.div>
+                <motion.button 
+                  whileHover={{ scale: 1.05, backgroundColor: 'rgba(239, 68, 68, 0.1)' }} 
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout} 
+                  className="text-red-500 hover:text-red-600 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2"
+                >
                   <LogOut size={18} />
                   {t('navbar.logout')}
-                </button>
+                </motion.button>
               </>
             ) : (
               <>
-                <Link to="/login" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-3 py-2 rounded-md font-medium transition-colors">
-                  {t('navbar.login')}
-                </Link>
-                <Link to="/register" className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-full font-medium transition-colors shadow-lg shadow-primary-500/30">
-                  {t('navbar.join')}
-                </Link>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative group">
+                  <Link to="/login" className="text-gray-700 dark:text-gray-200 hover:text-primary-500 px-3 py-2 rounded-md font-medium transition-colors">
+                    {t('navbar.login')}
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary-500 group-hover:w-1/2 transition-all duration-300"></span>
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                  <Link to="/register" className="glow-border bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-5 py-2.5 rounded-full font-medium transition-all shadow-lg shadow-primary-500/30 flex items-center justify-center">
+                    {t('navbar.join')}
+                  </Link>
+                </motion.div>
               </>
             )}
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

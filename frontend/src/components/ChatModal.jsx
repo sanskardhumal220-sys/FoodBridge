@@ -1,36 +1,56 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send } from 'lucide-react';
+import { X, Send, Languages } from 'lucide-react';
 import { triggerNotification } from './ToastProvider';
 import { useTranslation } from 'react-i18next';
+import { io } from 'socket.io-client';
+import axios from 'axios';
 
 const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const chatEndRef = useRef(null);
+  const socketRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && donationId) {
-      loadMessages();
-      // Listen for incoming messages on this donation
-      const handleStorageChange = (e) => {
-        if (e.key === 'mockChats') {
-          loadMessages();
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const token = userInfo ? userInfo.token : null;
+
+      // Connect to Socket.IO
+      socketRef.current = io(import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '');
+      
+      socketRef.current.emit('join_chat', donationId);
+
+      socketRef.current.on('new_message', (msg) => {
+        setMessages((prev) => [...prev, msg]);
+        if (msg.senderName !== currentUser.name) {
+          triggerNotification(`💬 New message from ${msg.senderName}: ${msg.text.substring(0, 20)}...`);
+        }
+      });
+
+      // Fetch chat history
+      const fetchHistory = async () => {
+        try {
+          const { data } = await axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${donationId}/messages`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setMessages(data);
+        } catch (error) {
+          console.error("Failed to load chat history:", error);
         }
       };
-      window.addEventListener('storage', handleStorageChange);
-      
-      // Also custom event for same-window updates
-      const handleLocalEvent = () => loadMessages();
-      window.addEventListener(`chat-updated-${donationId}`, handleLocalEvent);
+
+      fetchHistory();
 
       return () => {
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener(`chat-updated-${donationId}`, handleLocalEvent);
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
       };
     }
-  }, [isOpen, donationId]);
+  }, [isOpen, donationId, currentUser.name]);
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -38,39 +58,20 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
     }
   }, [messages]);
 
-  const loadMessages = () => {
-    const storedChats = JSON.parse(localStorage.getItem('mockChats')) || {};
-    setMessages(storedChats[donationId] || []);
-  };
-
   const handleSend = (e) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
-    const newMessage = {
-      id: Date.now().toString(),
-      text: inputText,
-      senderName: currentUser.name,
-      senderRole: currentUser.role,
-      timestamp: new Date().toISOString(),
-    };
+    if (socketRef.current) {
+      socketRef.current.emit('send_message', {
+        donationId,
+        senderName: currentUser.name,
+        senderRole: currentUser.role,
+        text: inputText
+      });
+    }
 
-    const storedChats = JSON.parse(localStorage.getItem('mockChats')) || {};
-    const donationChats = storedChats[donationId] || [];
-    donationChats.push(newMessage);
-    storedChats[donationId] = donationChats;
-    
-    localStorage.setItem('mockChats', JSON.stringify(storedChats));
-    
-    // Simulate notification for the other party if they aren't looking
-    triggerNotification(`💬 New message from ${currentUser.name}: ${inputText.substring(0, 20)}...`);
-
-    // Dispatch event so same window updates instantly if multiple tabs open
-    window.dispatchEvent(new Event(`chat-updated-${donationId}`));
-    window.dispatchEvent(new Event('storage')); // trigger cross tab
-    
     setInputText('');
-    loadMessages();
   };
 
   return (
@@ -93,7 +94,14 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
           >
             {/* Header */}
             <div className="p-4 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
-              <h3 className="font-bold text-lg dark:text-white">{t('chat_modal.title')}</h3>
+              <div>
+                <h3 className="font-bold text-lg dark:text-white flex items-center gap-2">
+                  {t('chat_modal.title')}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
+                  <Languages size={12} /> Auto-translating via AI
+                </p>
+              </div>
               <button onClick={onClose} className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors">
                 <X size={20} />
               </button>
@@ -120,7 +128,13 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
                         </span>
                       </div>
                       <div className={`px-4 py-2 rounded-2xl max-w-[85%] ${isMe ? 'bg-primary-500 text-white rounded-tr-none shadow-md shadow-primary-500/20' : 'bg-gray-100 dark:bg-gray-800 dark:text-white rounded-tl-none'}`}>
-                        {msg.text}
+                        <div className="text-sm">{msg.text}</div>
+                        {msg.translatedText && !isMe && (
+                           <div className="mt-1 pt-1 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 italic flex items-start gap-1">
+                             <Languages size={12} className="mt-[2px] flex-shrink-0" />
+                             <span>{msg.translatedText}</span>
+                           </div>
+                        )}
                       </div>
                     </div>
                   );

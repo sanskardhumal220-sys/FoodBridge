@@ -45,10 +45,10 @@ const VolunteerDashboard = () => {
         queryParams.append('userLng', lng);
       }
       
-      const availableReq = axios.get(`http://localhost:5000/api/donations?${queryParams.toString()}`, {
+      const availableReq = axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?${queryParams.toString()}`, {
         headers: { Authorization: `Bearer ${currentUser.token}` }
       });
-      const mineReq = axios.get(`http://localhost:5000/api/donations?status=PickedUp&volunteer=${currentUser._id}`, {
+      const mineReq = axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?status=PickedUp&volunteer=${currentUser._id}`, {
         headers: { Authorization: `Bearer ${currentUser.token}` }
       });
 
@@ -64,7 +64,7 @@ const VolunteerDashboard = () => {
 
   const claimDelivery = async (id) => {
     try {
-      const { data } = await axios.put(`http://localhost:5000/api/donations/${id}/claim`, {}, {
+      const { data } = await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/claim`, {}, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       fetchDonations(user); // Refresh lists
@@ -77,7 +77,7 @@ const VolunteerDashboard = () => {
 
   const markDelivered = async (id) => {
     try {
-      const { data } = await axios.put(`http://localhost:5000/api/donations/${id}/deliver`, {}, {
+      const { data } = await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/deliver`, {}, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       fetchDonations(user); // Refresh lists

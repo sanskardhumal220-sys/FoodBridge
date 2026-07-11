@@ -56,7 +56,7 @@ const DonorDashboard = () => {
 
   const fetchMyDonations = async (userId, token) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/donations?donor=${userId}`, {
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations?donor=${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMyDonations(data);
@@ -82,7 +82,7 @@ const DonorDashboard = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/donations', {
+      const { data } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations', {
         foodType: formData.foodType,
         quantity: `${formData.quantity} ${formData.unit}`,
         prepTime: formData.prepTime,
@@ -110,14 +110,23 @@ const DonorDashboard = () => {
     if (!formData.image) return alert('Please upload an image first');
     setIsAnalyzing(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/donations/analyze', {
+      const { data } = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/donations/analyze', {
         image: formData.image,
-        quantity: `${formData.quantity} ${formData.unit}`
+        quantity: formData.quantity ? `${formData.quantity} ${formData.unit}` : undefined
       }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setAiResult(data.foodBrainData);
-      triggerNotification(`✨ AI Analysis Complete! Freshness Score: ${data.foodBrainData.freshnessScore}%`);
+      
+      setFormData(prev => ({
+        ...prev,
+        foodType: data.foodBrainData.foodType || prev.foodType,
+        quantity: data.foodBrainData.estimatedQuantity || prev.quantity,
+        unit: data.foodBrainData.unit || prev.unit
+      }));
+
+      triggerNotification(`✨ AI Analysis Complete! Detected: ${data.foodBrainData.foodType || 'Food'}`);
+      setStep(2);
     } catch (error) {
       alert('Error analyzing freshness: ' + (error.response?.data?.message || error.message));
     }
@@ -131,12 +140,12 @@ const DonorDashboard = () => {
 
   // Mock NGOs for Radar Map & Recommendations
   const mockNgos = [
-    { id: 'g1', lat: 26.2183, lng: 78.1828, name: 'Gwalior Food Rescue', needed: 'Grains, Cooked Food', urgency: 'High', capacity: 500, verified: true, trustScore: 98 },
-    { id: 'g2', lat: 26.2300, lng: 78.1900, name: 'MP Help Foundation', needed: 'Fresh Produce', urgency: 'Medium', capacity: 200, verified: true, trustScore: 95 },
-    { id: 'g3', lat: 26.2050, lng: 78.1650, name: 'Lashkar Community Kitchen', needed: 'Leftover Meals', urgency: 'Low', capacity: 150, verified: false, trustScore: 80 },
-    { id: 'g4', lat: 26.2350, lng: 78.2250, name: 'Morar Relief Center', needed: 'Bulk Rice & Dal', urgency: 'High', capacity: 1000, verified: true, trustScore: 99 },
-    { id: 'g5', lat: 26.2500, lng: 78.1750, name: 'DD Nagar Care', needed: 'Canned Goods', urgency: 'Medium', capacity: 300, verified: false, trustScore: 85 },
-    { id: 'g6', lat: 26.2100, lng: 78.1950, name: 'City Center Food Bank', needed: 'Fresh Produce', urgency: 'Low', capacity: 100, verified: true, trustScore: 92 }
+    { id: 'g1', lat: 26.2183, lng: 78.1828, name: 'Ramakrishna Mission Ashrama Sharada Balgram', needed: 'Grains, Cooked Food', urgency: 'High', capacity: 500, verified: true, trustScore: 98 },
+    { id: 'g2', lat: 26.2300, lng: 78.1900, name: 'Narayan Seva Sansthan', needed: 'Fresh Produce', urgency: 'Medium', capacity: 200, verified: true, trustScore: 95 },
+    { id: 'g3', lat: 26.2050, lng: 78.1650, name: 'The Power Of Education Foundations', needed: 'Leftover Meals', urgency: 'Low', capacity: 150, verified: false, trustScore: 80 },
+    { id: 'g4', lat: 26.2350, lng: 78.2250, name: 'Dada Maharaj Ashram', needed: 'Bulk Rice & Dal', urgency: 'High', capacity: 1000, verified: true, trustScore: 99 },
+    { id: 'g5', lat: 26.2500, lng: 78.1750, name: 'Vaibhav Foundation India', needed: 'Canned Goods', urgency: 'Medium', capacity: 300, verified: false, trustScore: 85 },
+    { id: 'g6', lat: 26.2100, lng: 78.1950, name: 'Youthpray Foundation', needed: 'Fresh Produce', urgency: 'Low', capacity: 100, verified: true, trustScore: 92 }
   ];
 
   useEffect(() => {
@@ -222,10 +231,17 @@ const DonorDashboard = () => {
                 )}
               </div>
               <button 
-                onClick={() => setStep(2)}
-                className="mt-6 w-full bg-primary-500 text-white py-3 rounded-xl font-semibold transition-colors"
+                onClick={analyzeFreshness}
+                disabled={isAnalyzing || !formData.image}
+                className="mt-6 w-full bg-primary-500 hover:bg-primary-600 disabled:bg-primary-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
               >
-                {t('donor_dashboard.next_step')}
+                {isAnalyzing ? <span className="animate-pulse">Analyzing with AI...</span> : <><Sparkles size={18} /> Analyze & Auto-Fill</>}
+              </button>
+              <button 
+                onClick={() => setStep(2)}
+                className="mt-4 w-full bg-transparent border-2 border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+              >
+                Skip & Enter Manually
               </button>
             </motion.div>
           )}
@@ -249,14 +265,15 @@ const DonorDashboard = () => {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.food_type')}</label>
-                  <input type="text" required onChange={e => setFormData({...formData, foodType: e.target.value})} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder={t('donor_dashboard.food_type_ph')} />
+                  <input type="text" required value={formData.foodType} onChange={e => setFormData({...formData, foodType: e.target.value})} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder={t('donor_dashboard.food_type_ph')} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-700 dark:text-gray-300 mb-2">{t('donor_dashboard.quantity')}</label>
                   <div className="flex gap-2">
-                    <input type="number" required onChange={e => setFormData({...formData, quantity: e.target.value})} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="10" />
+                    <input type="number" required value={formData.quantity} onChange={e => setFormData({...formData, quantity: e.target.value})} className="w-full px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white" placeholder="10" />
                     <select value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} className="px-4 py-3 rounded-xl border dark:border-gray-700 dark:bg-gray-800 dark:text-white bg-white">
                       <option value="kg">kg</option>
+                      <option value="pieces">pieces</option>
                       <option value="packets">packets</option>
                       <option value="servings">servings</option>
                       <option value="liters">liters</option>
@@ -281,28 +298,19 @@ const DonorDashboard = () => {
                 <MapComponent onLocationSelect={handleLocation} />
               </div>
 
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div>
-                    <h4 className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
-                      <Sparkles className="text-indigo-500" size={18} /> AI Freshness Prediction
-                    </h4>
-                    <p className="text-sm text-indigo-700/80 dark:text-indigo-400/80 mt-1">Get an instant safety & freshness score before donating.</p>
-                  </div>
-                  {aiResult ? (
+              {aiResult && (
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/50">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <h4 className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
+                        <Sparkles className="text-indigo-500" size={18} /> AI Analysis Complete
+                      </h4>
+                      <p className="text-sm text-indigo-700/80 dark:text-indigo-400/80 mt-1">We've estimated the food type and freshness score for you.</p>
+                    </div>
                     <FreshnessBadge foodBrainData={aiResult} showDetails={true} />
-                  ) : (
-                    <button 
-                      type="button"
-                      onClick={analyzeFreshness}
-                      disabled={isAnalyzing || !formData.image}
-                      className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-6 py-2.5 rounded-xl font-semibold shadow-md shadow-indigo-200 dark:shadow-none transition-all flex items-center gap-2 whitespace-nowrap"
-                    >
-                      {isAnalyzing ? <span className="animate-pulse">Analyzing...</span> : <>Analyze Now <Sparkles size={16} /></>}
-                    </button>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <button 
                 type="submit"
@@ -314,7 +322,7 @@ const DonorDashboard = () => {
             </motion.form>
           )}
 
-          {step === 3 && aiResult && (
+          {step === 3 && (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass p-8 rounded-3xl text-center">
               <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle size={40} />
@@ -322,27 +330,29 @@ const DonorDashboard = () => {
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('donor_dashboard.success_title')}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-8">{t('donor_dashboard.success_desc')}</p>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
-                  <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.peopleFed}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.people_fed')}</div>
+              {aiResult && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.peopleFed}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.people_fed')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.freshnessScore}%</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.freshness')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.safetyScore}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.safety_rating')}</div>
+                  </div>
+                  <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.co2Saved.toFixed(1)}kg</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.co2_saved')}</div>
+                  </div>
                 </div>
-                <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
-                  <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.freshnessScore}%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.freshness')}</div>
-                </div>
-                <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
-                  <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.safetyScore}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.safety_rating')}</div>
-                </div>
-                <div className="bg-primary-50 dark:bg-primary-900/30 p-4 rounded-xl border border-primary-100 dark:border-primary-800">
-                  <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">{aiResult.co2Saved.toFixed(1)}kg</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('donor_dashboard.co2_saved')}</div>
-                </div>
-              </div>
+              )}
               
               <div className="flex justify-center gap-4">
-                <button onClick={() => { setStep(1); setFormData({...formData, image: ''}); }} className="px-6 py-2 border-2 border-primary-500 text-primary-500 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
+                <button onClick={() => { setStep(1); setFormData({...formData, image: ''}); setAiResult(null); }} className="px-6 py-2 border-2 border-primary-500 text-primary-500 rounded-xl font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
                   {t('donor_dashboard.make_another')}
                 </button>
                 <button onClick={() => setActiveTab('my_donations')} className="px-6 py-2 bg-primary-500 text-white rounded-xl font-semibold hover:bg-primary-600 transition-colors">
@@ -370,8 +380,9 @@ const DonorDashboard = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
                   key={donation._id} 
-                  className="glass rounded-3xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700"
+                  className="glass-card rounded-3xl overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700 hover:shadow-2xl hover:shadow-primary-500/10 transition-shadow"
                 >
                   <div className="relative">
                     {donation.image ? (
@@ -380,11 +391,14 @@ const DonorDashboard = () => {
                       <div className="w-full h-48 bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-400">{t('donor_dashboard.no_image')}</div>
                     )}
                     {/* Status Badge */}
-                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-md capitalize">
+                    <motion.div 
+                      whileHover={{ scale: 1.05 }}
+                      className="absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-md capitalize cursor-default"
+                    >
                       {donation.status === 'PickedUp' ? 'On the Way 🚚' : 
                        donation.status === 'Completed' ? 'Delivered ✅' : 
                        t(`status_${donation.status}`, { defaultValue: donation.status.replace('_', ' ') })}
-                    </div>
+                    </motion.div>
                   </div>
                   <div className="p-6 flex-grow flex flex-col">
                     <div className="flex justify-between items-start mb-4">
@@ -407,20 +421,24 @@ const DonorDashboard = () => {
                       )}
                     </div>
 
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => openChat(donation._id)}
                       className="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:text-indigo-400 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 border border-indigo-200 dark:border-indigo-800"
                     >
                       <MessageCircle size={20} /> {t('volunteer_dashboard.open_chat')}
-                    </button>
+                    </motion.button>
                     
                     {donation.status === 'PickedUp' && (
-                      <button 
+                      <motion.button 
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setTrackingDonation(donation)}
-                        className="w-full mt-3 bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30"
+                        className="w-full mt-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30"
                       >
                         <Navigation size={20} /> Track Live Delivery
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </motion.div>

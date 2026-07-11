@@ -1,4 +1,5 @@
 const Donation = require('../models/Donation');
+const Message = require('../models/Message');
 const { isValidCoordinate } = require('../utils/location');
 const { calculateDistance } = require('../utils/distance');
 const { notifyStakeholders } = require('../utils/notifications');
@@ -197,7 +198,10 @@ const analyzeFoodFreshness = async (req, res) => {
       estimatedSpoilage: `${Math.floor(Math.random() * 24) + 12} hours`,
       peopleFed: Math.floor(parseInt(quantity || '5') * 2.5) || 5,
       safetyScore: 'High',
-      co2Saved: (Math.floor(parseInt(quantity || '5') * 2.5) || 5) * 1.2
+      co2Saved: (Math.floor(parseInt(quantity || '5') * 2.5) || 5) * 1.2,
+      foodType: 'Assorted Food',
+      estimatedQuantity: parseInt(quantity || '5'),
+      unit: 'servings'
     };
 
     if (foodBrainData.freshnessScore < 80) foodBrainData.safetyScore = 'Medium';
@@ -213,6 +217,9 @@ const analyzeFoodFreshness = async (req, res) => {
 
         const prompt = `Analyze this food image. We are determining if it is safe to donate. Provide a JSON response matching exactly this structure (no markdown tags, just the raw JSON object):
         {
+          "foodType": "<string, specific name of the food in the image>",
+          "estimatedQuantity": <number, estimate the quantity in units or servings>,
+          "unit": "<string, MUST be exactly one of: 'kg', 'pieces', 'packets', 'servings', or 'liters'>",
           "freshnessScore": <number between 0-100>,
           "estimatedSpoilage": "<string like '24 hours'>",
           "peopleFed": <number, estimate based on image, or ${quantity || 5} if it seems reasonable>,
@@ -221,7 +228,7 @@ const analyzeFoodFreshness = async (req, res) => {
         }`;
 
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-flash-latest',
             contents: [
                 {
                     role: 'user',
@@ -254,11 +261,33 @@ const analyzeFoodFreshness = async (req, res) => {
   }
 };
 
+// @desc    Get messages for a specific donation
+// @route   GET /api/donations/:id/messages
+// @access  Private
+const getDonationMessages = async (req, res) => {
+  try {
+    const messages = await Message.find({ donation: req.params.id }).sort({ createdAt: 1 });
+    // Transform slightly for frontend
+    const formattedMessages = messages.map(msg => ({
+      id: msg._id,
+      senderName: msg.senderName,
+      senderRole: msg.senderRole,
+      text: msg.text,
+      translatedText: msg.translatedText,
+      timestamp: msg.createdAt
+    }));
+    res.json(formattedMessages);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createDonation,
   getDonations,
   acceptDonation,
   claimDelivery,
   deliverDonation,
-  analyzeFoodFreshness
+  analyzeFoodFreshness,
+  getDonationMessages
 };

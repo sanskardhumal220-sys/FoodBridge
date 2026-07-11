@@ -16,7 +16,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/admin/ngos/pending', {
+      const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin/ngos/pending', {
         headers: { Authorization: `Bearer ${userInfo.token}` } // Assume admin has token
       });
       setPendingNGOs(data);
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
   const handleVerify = async (id, status) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.put(`http://localhost:5000/api/admin/ngos/${id}/verify`, { status }, {
+      await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/admin/ngos/${id}/verify`, { status }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       triggerNotification(`NGO ${status} successfully!`);
