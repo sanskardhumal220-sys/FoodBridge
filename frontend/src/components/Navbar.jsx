@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Utensils, LogOut, LayoutDashboard, Globe, Settings as SettingsIcon, BarChart2, Moon, Sun } from 'lucide-react';
+import { Utensils, LogOut, LayoutDashboard, Globe, Settings as SettingsIcon, BarChart2, Moon, Sun, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -8,6 +8,7 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -85,7 +86,7 @@ const Navbar = () => {
               FoodBridge
             </span>
           </Link>
-          <div className="flex space-x-1 sm:space-x-4 items-center shrink-0">
+          <div className="hidden md:flex space-x-1 sm:space-x-4 items-center shrink-0">
             
             {/* Dark Mode Toggle */}
             <motion.button
@@ -160,7 +161,82 @@ const Navbar = () => {
               </>
             )}
           </div>
+          
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center space-x-2">
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: isDarkMode ? -15 : 15 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors"
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </motion.button> 
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 p-2"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown */}
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden mt-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-4 flex flex-col space-y-4"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-300 font-medium">Language</span>
+              <select 
+                onChange={changeLanguage} 
+                defaultValue={i18n.language || 'en'}
+                className="bg-gray-100 dark:bg-gray-800 text-sm font-medium outline-none cursor-pointer rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700"
+              >
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+              </select>
+            </div>
+
+            <div className="h-px bg-gray-200 dark:bg-gray-800 w-full"></div>
+
+            {user ? (
+              <div className="flex flex-col space-y-2">
+                <span className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                  {t('navbar.welcome')}, <span className="text-gray-800 dark:text-gray-200">{user.name}</span>
+                </span>
+                <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
+                  <LayoutDashboard size={18} />
+                  {t('navbar.dashboard')}
+                </Link>
+                <Link to="/settings" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-200 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/30 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2">
+                  <SettingsIcon size={18} />
+                  Settings
+                </Link>
+                <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="text-red-500 hover:text-red-600 px-3 py-2 rounded-md font-medium transition-all flex items-center gap-2 text-left">
+                  <LogOut size={18} />
+                  {t('navbar.logout')}
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-3">
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-center text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2 rounded-xl font-medium transition-colors">
+                  {t('navbar.login')}
+                </Link>
+                <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="text-center bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-all shadow-lg shadow-primary-500/30">
+                  {t('navbar.join')}
+                </Link>
+              </div>
+            )}
+          </motion.div>
+        )}
       </div>
     </motion.nav>
   );
