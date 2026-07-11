@@ -2,13 +2,33 @@ import { motion, useScroll, useTransform, useMotionValue, useMotionTemplate } fr
 import { Link } from 'react-router-dom';
 import { ArrowRight, Leaf, HeartHandshake, MapPin, Activity, Users, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Home = () => {
   const { t } = useTranslation();
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
   
+  const [stats, setStats] = useState({
+    mealsRescued: 0,
+    activeNGOs: 0,
+    citiesServed: 0,
+    carbonSaved: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/public/stats');
+        setStats(data);
+      } catch (err) {
+        console.error('Error fetching stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -164,10 +184,10 @@ const Home = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
           >
             {[
-              { label: 'Meals Rescued', value: '1M+' },
-              { label: 'Active NGOs', value: '500+' },
-              { label: 'Cities Served', value: '45' },
-              { label: 'Carbon Saved', value: '2.5T' }
+              { label: 'Meals Rescued', value: stats.mealsRescued.toString() },
+              { label: 'Active NGOs', value: stats.activeNGOs.toString() },
+              { label: 'Cities Served', value: stats.citiesServed.toString() },
+              { label: 'Carbon Saved', value: stats.carbonSaved + 'T' }
             ].map((stat, i) => (
               <motion.div key={i} variants={itemVariants} className="text-white">
                 <div className="text-4xl md:text-5xl font-extrabold mb-2">{stat.value}</div>
