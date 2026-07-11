@@ -119,5 +119,28 @@
     "accept_rescue": "Accept & Rescue",
     "no_rescues": "You haven't rescued any food yet.",
     "chat_donor": "Chat with Donor"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "We are on a mission to eliminate food waste and eradicate hunger by connecting surplus food with those who need it most.",
+    "mission_title": "Our Mission",
+    "mission_desc": "To create a seamless, technology-driven ecosystem that rescues perfectly good surplus food from restaurants, events, and individuals, and delivers it swiftly to NGOs and communities facing food insecurity.",
+    "vision_title": "Our Vision",
+    "vision_desc": "A world where no edible food goes to waste and no person goes to bed hungry. We envision sustainable, zero-waste communities powered by compassion and shared resources.",
+    "story_title": "Our Story",
+    "story_p1": "FoodBridge was born from a simple observation: while banquet halls throw away hundreds of kilos of fresh food every night, just a few miles away, families struggle to find their next meal.",
+    "story_p2": "What started as a small WhatsApp group of volunteers rescuing food in local neighborhoods has blossomed into a sophisticated platform. Today, our AI-powered FoodBrain technology ensures that food is matched efficiently, safely, and transparently.",
+    "story_p3": "We believe that bridging this gap isn't just about logistics; it's about building a community that cares. Every meal rescued is a step towards a greener planet and a kinder society.",
+    "values_title": "Our Values",
+    "values_desc": "The principles that guide our everyday operations and long-term vision.",
+    "val1_title": "Safety First",
+    "val1_desc": "Our FoodBrain AI strictly evaluates freshness and safety before any food reaches a beneficiary.",
+    "val2_title": "Community Driven",
+    "val2_desc": "We empower local heroes—donors, volunteers, and NGOs—to make an impact in their own neighborhoods.",
+    "val3_title": "Radical Transparency",
+    "val3_desc": "Track your donation from pickup to plate. Know exactly who you helped and the environmental impact made.",
+    "why_title": "Why Choose FoodBridge?",
+    "why_desc": "Unlike traditional food banks, FoodBridge operates in real-time. We don't store surplus food; we route it instantly. This means fresher food for beneficiaries, zero storage overhead, and a highly scalable model that can rescue food anywhere, anytime.",
+    "start_donating": "Start Donating Today"
   }
 }

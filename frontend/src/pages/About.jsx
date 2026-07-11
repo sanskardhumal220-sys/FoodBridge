@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Globe, Users, ArrowRight, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const About = () => {
+  const { t } = useTranslation();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -31,7 +33,7 @@ const About = () => {
             transition={{ duration: 0.6 }}
             className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight"
           >
-            About <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-accent-500">FoodBridge</span>
+            {t('about.title')} <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-accent-500">FoodBridge</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -39,7 +41,7 @@ const About = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
           >
-            We are on a mission to eliminate food waste and eradicate hunger by connecting surplus food with those who need it most.
+            {t('about.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -58,36 +60,30 @@ const About = () => {
               <motion.div variants={itemVariants} className="glass p-8 rounded-3xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-2 h-full bg-primary-500" />
                 <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
-                  <Globe className="text-primary-500" /> Our Mission
+                  <Globe className="text-primary-500" /> {t('about.mission_title')}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  To create a seamless, technology-driven ecosystem that rescues perfectly good surplus food from restaurants, events, and individuals, and delivers it swiftly to NGOs and communities facing food insecurity.
+                  {t('about.mission_desc')}
                 </p>
               </motion.div>
 
               <motion.div variants={itemVariants} className="glass p-8 rounded-3xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-2 h-full bg-accent-500" />
                 <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-3">
-                  <Sparkles className="text-accent-500" /> Our Vision
+                  <Sparkles className="text-accent-500" /> {t('about.vision_title')}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  A world where no edible food goes to waste and no person goes to bed hungry. We envision sustainable, zero-waste communities powered by compassion and shared resources.
+                  {t('about.vision_desc')}
                 </p>
               </motion.div>
             </div>
 
             <motion.div variants={itemVariants} className="glass p-10 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800">
-              <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Our Story</h3>
+              <h3 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{t('about.story_title')}</h3>
               <div className="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
-                <p>
-                  FoodBridge was born from a simple observation: while banquet halls throw away hundreds of kilos of fresh food every night, just a few miles away, families struggle to find their next meal.
-                </p>
-                <p>
-                  What started as a small WhatsApp group of volunteers rescuing food in local neighborhoods has blossomed into a sophisticated platform. Today, our AI-powered FoodBrain technology ensures that food is matched efficiently, safely, and transparently.
-                </p>
-                <p>
-                  We believe that bridging this gap isn't just about logistics; it's about building a community that cares. Every meal rescued is a step towards a greener planet and a kinder society.
-                </p>
+                <p>{t('about.story_p1')}</p>
+                <p>{t('about.story_p2')}</p>
+                <p>{t('about.story_p3')}</p>
               </div>
             </motion.div>
           </motion.div>
@@ -100,8 +96,8 @@ const About = () => {
       <section className="w-full py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Our Values</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">The principles that guide our everyday operations and long-term vision.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{t('about.values_title')}</h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t('about.values_desc')}</p>
           </div>
 
           <motion.div 
@@ -113,28 +109,28 @@ const About = () => {
           >
             <ValueCard 
               icon={<ShieldCheck className="w-10 h-10 text-primary-500" />}
-              title="Safety First"
-              description="Our FoodBrain AI strictly evaluates freshness and safety before any food reaches a beneficiary."
+              title={t('about.val1_title')}
+              description={t('about.val1_desc')}
             />
             <ValueCard 
               icon={<Users className="w-10 h-10 text-accent-500" />}
-              title="Community Driven"
-              description="We empower local heroes—donors, volunteers, and NGOs—to make an impact in their own neighborhoods."
+              title={t('about.val2_title')}
+              description={t('about.val2_desc')}
             />
             <ValueCard 
               icon={<TrendingUp className="w-10 h-10 text-blue-500" />}
-              title="Radical Transparency"
-              description="Track your donation from pickup to plate. Know exactly who you helped and the environmental impact made."
+              title={t('about.val3_title')}
+              description={t('about.val3_desc')}
             />
           </motion.div>
 
           <div className="glass p-12 rounded-3xl border border-gray-200 dark:border-gray-800 text-center max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Why Choose FoodBridge?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t('about.why_title')}</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              Unlike traditional food banks, FoodBridge operates in real-time. We don't store surplus food; we route it instantly. This means fresher food for beneficiaries, zero storage overhead, and a highly scalable model that can rescue food anywhere, anytime.
+              {t('about.why_desc')}
             </p>
             <Link to="/register" className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-xl hover:scale-105">
-              Start Donating Today <ArrowRight />
+              {t('about.start_donating')} <ArrowRight />
             </Link>
           </div>
         </div>
