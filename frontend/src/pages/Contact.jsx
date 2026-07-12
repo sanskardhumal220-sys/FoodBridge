@@ -53,9 +53,9 @@ const Contact = () => {
             <div className="glass p-8 rounded-3xl border border-gray-200 dark:border-gray-800 space-y-6">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t("contact.text3")}</h3>
               
-              <ContactRow icon={<Mail />} title={t("contact.attr4")} value="support@foodbridge.com" />
-              <ContactRow icon={<Phone />} title={t("contact.attr5")} value="+1 (555) 123-4567" />
-              <ContactRow icon={<MapPin />} title={t("contact.attr6")} value="123 Impact Way, Sustainability City, SC 90210" />
+              <ContactRow icon={<Mail />} title={t("contact.attr4")} value="dhumalhema4@gmail.com" />
+              <ContactRow icon={<Phone />} title={t("contact.attr5")} value="+91 74899 12494" />
+              <ContactRow icon={<MapPin />} title={t("contact.attr6")} value="Harishankarpuram, Gwalior 474001" />
               <ContactRow icon={<Globe />} title={t("contact.attr7")} value="www.foodbridge.com" />
               <ContactRow icon={<Clock />} title={t("contact.attr8")} value="Mon - Fri, 9:00 AM - 6:00 PM" />
 
