@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowRight, Leaf, MapPin, Users, HeartHandshake, ShieldCheck, 
   Sparkles, Camera, Map, Truck, MessageSquare, Zap, Globe, Quote,
-  ChevronRight, PlayCircle
+  ChevronRight, PlayCircle, Utensils, Home as HomeIcon
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
@@ -220,28 +220,67 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 5. IMPACT & TESTIMONIALS */}
+      {/* 5. BUILT FOR COMMUNITIES */}
       <section className="w-full py-32 bg-[#fafafa] dark:bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Loved by Communities</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">See how FoodBridge is making a tangible difference.</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">🌍 Built for Communities</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              FoodBridge is designed to create meaningful impact across the entire food redistribution ecosystem.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((test, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none flex flex-col justify-between">
-                <div>
-                  <Quote className="w-10 h-10 text-primary-200 dark:text-primary-900 mb-6" />
-                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium italic mb-8">"{test.quote}"</p>
-                </div>
-                <div>
-                  <div className="font-bold text-gray-900 dark:text-white">{test.author}</div>
-                  <div className="text-sm text-primary-600 dark:text-primary-400 font-medium">{test.role}</div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            {/* Card 1 */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
+              <Utensils className="w-10 h-10 text-primary-500 mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Restaurants & Hotels</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Reduce food waste, improve sustainability, and contribute surplus food to communities in need.</p>
+            </motion.div>
+            
+            {/* Card 2 */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
+              <HomeIcon className="w-10 h-10 text-primary-500 mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">NGOs & Shelters</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Receive nearby food donations quickly through AI-powered matching and real-time coordination.</p>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
+              <Users className="w-10 h-10 text-primary-500 mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Volunteers & Communities</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Participate in food rescue missions and help deliver meals safely and efficiently.</p>
+            </motion.div>
+
+            {/* Card 4 */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }} className="p-8 rounded-[2rem] bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-900/10 border border-primary-100 dark:border-primary-800 shadow-xl shadow-primary-500/10 hover:-translate-y-2 transition-transform duration-300">
+              <Leaf className="w-10 h-10 text-primary-600 dark:text-primary-400 mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Environmental Impact</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Prevent food wastage and reduce unnecessary carbon emissions through smarter redistribution.</p>
+            </motion.div>
           </div>
+
+          {/* Statistics Banner */}
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="p-10 rounded-[2rem] glass-card bg-primary-600 dark:bg-primary-950 text-white shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-400 rounded-full blur-[100px] opacity-30 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400 rounded-full blur-[100px] opacity-20 pointer-events-none" />
+            
+            <div className="grid md:grid-cols-3 gap-8 relative z-10 text-center">
+              <div>
+                <div className="text-4xl font-extrabold mb-2">40%</div>
+                <div className="text-primary-100 font-medium">of food produced globally is wasted.</div>
+              </div>
+              <div>
+                <div className="text-4xl font-extrabold mb-2">Millions</div>
+                <div className="text-primary-100 font-medium">of people still face food insecurity.</div>
+              </div>
+              <div>
+                <div className="text-4xl font-extrabold mb-2">AI + You</div>
+                <div className="text-primary-100 font-medium">FoodBridge aims to bridge this gap.</div>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
