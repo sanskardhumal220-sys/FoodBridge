@@ -72,18 +72,30 @@ const NGODashboard = () => {
     setLoading(false);
   };
   const acceptDonation = async id => {
-    try {
-      await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/accept`, {}, {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`
-        }
-      });
-      fetchData(userInfo); // Refresh lists
-      alert('Donation successfully claimed! Please check "My Rescues" to coordinate.');
-      setActiveTab('rescues'); // Switch to rescues tab automatically
-      setViewMode('list');
-    } catch (error) {
-      alert('Failed to accept donation');
+    const performAccept = async (lat = null, lng = null) => {
+      try {
+        const payload = (lat && lng) ? { lat, lng } : {};
+        await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/accept`, payload, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`
+          }
+        });
+        fetchData(userInfo); // Refresh lists
+        alert('Donation successfully claimed! Please check "My Rescues" to coordinate.');
+        setActiveTab('rescues'); // Switch to rescues tab automatically
+        setViewMode('list');
+      } catch (error) {
+        alert('Failed to accept donation');
+      }
+    };
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        pos => performAccept(pos.coords.latitude, pos.coords.longitude),
+        () => performAccept()
+      );
+    } else {
+      performAccept();
     }
   };
   const isUrgent = expiryTime => {

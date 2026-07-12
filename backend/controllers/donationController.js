@@ -1,5 +1,6 @@
 const Donation = require('../models/Donation');
 const Message = require('../models/Message');
+const User = require('../models/User');
 const { isValidCoordinate } = require('../utils/location');
 const { calculateDistance } = require('../utils/distance');
 const { notifyStakeholders } = require('../utils/notifications');
@@ -111,6 +112,7 @@ const getDonations = async (req, res) => {
 // @access  Private (NGO/Volunteer)
 const acceptDonation = async (req, res) => {
   try {
+    const { lat, lng } = req.body;
     const donation = await Donation.findById(req.params.id);
 
     if (donation) {
@@ -118,6 +120,14 @@ const acceptDonation = async (req, res) => {
       donation.acceptedBy = req.user._id;
       const updatedDonation = await donation.save();
       
+      // Save the NGO's GPS location if provided
+      if (lat && lng) {
+        await User.findByIdAndUpdate(req.user._id, {
+          'location.lat': lat,
+          'location.lng': lng
+        });
+      }
+
       // Emit event
       req.app.get('io').emit('donation_accepted', updatedDonation);
       
