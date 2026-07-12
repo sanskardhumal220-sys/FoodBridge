@@ -28,13 +28,13 @@ const QRCodeModal = ({ isOpen, onClose, code, title, subtitle }) => {
           </div>
 
           <div className="bg-white p-6 rounded-2xl flex justify-center items-center mx-auto w-48 h-48 shadow-inner border border-gray-100 mb-6">
-            <QRCodeSVG value={code} size={160} level="L" />
+            <QRCodeSVG value={code || '000000'} size={160} level="L" />
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold mb-2">Or Use PIN</p>
             <div className="text-4xl font-mono font-bold tracking-[0.2em] text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 py-3 rounded-xl border border-primary-100 dark:border-primary-800">
-              {code}
+              {code || '000000'}
             </div>
           </div>
         </motion.div>

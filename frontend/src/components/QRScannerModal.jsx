@@ -13,6 +13,7 @@ const QRScannerModal = ({ isOpen, onClose, onScanSuccess, title, subtitle }) => 
         "reader",
         { 
           fps: 10, 
+          videoConstraints: { facingMode: "environment" }, 
           qrbox: (viewfinderWidth, viewfinderHeight) => {
             const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
             return {
