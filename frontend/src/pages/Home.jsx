@@ -261,22 +261,22 @@ const Home = () => {
           </div>
 
           {/* Statistics Banner */}
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="p-10 rounded-[2rem] glass-card bg-primary-600 dark:bg-primary-950 text-white shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-400 rounded-full blur-[100px] opacity-30 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400 rounded-full blur-[100px] opacity-20 pointer-events-none" />
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="p-10 rounded-[2rem] bg-gray-900 text-white shadow-2xl relative overflow-hidden border border-gray-800">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500 rounded-full blur-[100px] opacity-20 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500 rounded-full blur-[100px] opacity-20 pointer-events-none" />
             
             <div className="grid md:grid-cols-3 gap-8 relative z-10 text-center">
               <div>
                 <div className="text-4xl font-extrabold mb-2">40%</div>
-                <div className="text-primary-100 font-medium">of food produced globally is wasted.</div>
+                <div className="text-gray-300 font-medium">of food produced globally is wasted.</div>
               </div>
               <div>
                 <div className="text-4xl font-extrabold mb-2">Millions</div>
-                <div className="text-primary-100 font-medium">of people still face food insecurity.</div>
+                <div className="text-gray-300 font-medium">of people still face food insecurity.</div>
               </div>
               <div>
                 <div className="text-4xl font-extrabold mb-2">AI + You</div>
-                <div className="text-primary-100 font-medium">FoodBridge aims to bridge this gap.</div>
+                <div className="text-gray-300 font-medium">FoodBridge aims to bridge this gap.</div>
               </div>
             </div>
           </motion.div>
