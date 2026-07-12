@@ -60,12 +60,12 @@ const LiveTrackingMap = ({ donationId, pickupLocation, dropoffLocation, isVolunt
   let finalPickup = pickupLocation;
   let finalDropoff = dropoffLocation;
 
-  if (import.meta.env.DEV) {
-    if (!isPickupValid) finalPickup = DEFAULT_LOCATION;
-    if (!isDropoffValid) finalDropoff = DEFAULT_LOCATION;
-  }
+  if (!isPickupValid) finalPickup = DEFAULT_LOCATION;
+  if (!isDropoffValid) finalDropoff = DEFAULT_LOCATION;
 
-  const shouldShowFallback = !import.meta.env.DEV && (!isPickupValid || !isDropoffValid);
+  // We will always show the map for demo purposes, even if locations are missing,
+  // by falling back to the DEFAULT_LOCATION.
+  const shouldShowFallback = false;
 
   useEffect(() => {
     socketRef.current = io(import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '');
