@@ -25,7 +25,7 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
 
       socketRef.current.on('new_message', (msg) => {
         setMessages((prev) => [...prev, msg]);
-        if (msg.senderName !== currentUser.name) {
+        if (currentUser && msg.senderName !== currentUser.name) {
           triggerNotification(`💬 New message from ${msg.senderName}: ${msg.text.substring(0, 20)}...`);
         }
       });
@@ -50,7 +50,7 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
         }
       };
     }
-  }, [isOpen, donationId, currentUser.name]);
+  }, [isOpen, donationId, currentUser?.name]);
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -62,7 +62,7 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
     e.preventDefault();
     if (!inputText.trim()) return;
 
-    if (socketRef.current) {
+    if (socketRef.current && currentUser) {
       socketRef.current.emit('send_message', {
         donationId,
         senderName: currentUser.name,
@@ -116,7 +116,7 @@ const ChatModal = ({ isOpen, onClose, donationId, currentUser }) => {
                 </div>
               ) : (
                 messages.map((msg) => {
-                  const isMe = msg.senderName === currentUser.name && msg.senderRole === currentUser.role;
+                  const isMe = currentUser && msg.senderName === currentUser.name && msg.senderRole === currentUser.role;
                   return (
                     <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                       <div className="flex items-baseline gap-2 mb-1">
