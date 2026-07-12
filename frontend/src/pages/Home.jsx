@@ -1,306 +1,272 @@
-import { motion, useScroll, useTransform, useMotionValue, useMotionTemplate } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, HeartHandshake, MapPin, Activity, Users, ShieldCheck } from 'lucide-react';
+import { 
+  ArrowRight, Leaf, MapPin, Users, HeartHandshake, ShieldCheck, 
+  Sparkles, Camera, Map, Truck, MessageSquare, Zap, Globe, Quote,
+  ChevronRight, PlayCircle
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useRef, useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 const Home = () => {
   const { t } = useTranslation();
-  const {
-    scrollYProgress
-  } = useScroll();
+  const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const [stats, setStats] = useState({
-    mealsRescued: 0,
-    activeNGOs: 0,
-    citiesServed: 0,
-    carbonSaved: 0
-  });
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const {
-          data
-        } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/public/stats');
-        setStats(data);
-      } catch (err) {
-        console.error('Error fetching stats:', err);
-      }
-    };
-    fetchStats();
-  }, []);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  function handleMouseMove({
-    currentTarget,
-    clientX,
-    clientY
-  }) {
-    const {
-      left,
-      top
-    } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left);
-    mouseY.set(clientY - top);
-  }
-  const backgroundGradient = useMotionTemplate`
-    radial-gradient(
-      600px circle at ${mouseX}px ${mouseY}px,
-      rgba(26, 184, 95, 0.15),
-      transparent 80%
-    )
-  `;
 
-  // Animation variants
+  // Demo stats as requested
+  const stats = [
+    { label: 'Sample Donations', value: '25', suffix: '+' },
+    { label: 'NGO Partners (Demo)', value: '5', suffix: '' },
+    { label: 'Pilot Cities', value: '3', suffix: '' },
+    { label: 'Potential Carbon Savings', value: '30', suffix: 'T' }
+  ];
+
+  const timelineSteps = [
+    { icon: Camera, title: "1. Upload Surplus Food", desc: "Snap a photo of your excess food in seconds." },
+    { icon: Sparkles, title: "2. AI FoodBrain Analyzes", desc: "Our AI predicts freshness, type, and servings instantly." },
+    { icon: MapPin, title: "3. NGO Accepts", desc: "Nearby verified NGOs are notified and claim the food." },
+    { icon: Truck, title: "4. Volunteer Delivers", desc: "Live-tracked delivery ensures food arrives safely and fast." }
+  ];
+
+  const features = [
+    {
+      icon: Sparkles,
+      title: "AI FoodBrain",
+      desc: "Instantly analyzes food images to estimate freshness, safety, and nutritional impact.",
+      points: ["Food recognition", "Freshness prediction", "Safety score"],
+      color: "from-blue-500 to-indigo-500"
+    },
+    {
+      icon: Map,
+      title: "NGO Radar Map",
+      desc: "Connects donors with the nearest NGOs using real-time location mapping.",
+      points: ["Nearby NGOs", "Real-time urgency indicators", "Direct routing"],
+      color: "from-primary-500 to-emerald-500",
+      className: "lg:col-span-2"
+    },
+    {
+      icon: Truck,
+      title: "Volunteer Network",
+      desc: "Empower local drivers with optimized routing.",
+      points: ["Live route tracking", "Distance calculation", "Delivery verification"],
+      color: "from-orange-500 to-amber-500"
+    },
+    {
+      icon: MessageSquare,
+      title: "Smart Communication",
+      desc: "Seamless live coordination between all parties.",
+      points: ["Real-time chat", "AI auto translation", "Privacy protected"],
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: Globe,
+      title: "Impact Dashboard",
+      desc: "Track your contributions and environmental savings.",
+      points: ["Meals saved", "Carbon reduction", "Social impact metrics"],
+      color: "from-teal-500 to-cyan-500",
+      className: "lg:col-span-2"
+    }
+  ];
+
+  const testimonials = [
+    { quote: "FoodBridge transformed how we handle our banquet surplus. It's effortless and incredibly fulfilling.", author: "David M.", role: "Restaurant Owner" },
+    { quote: "The AI FoodBrain and live tracking give us total confidence in the food we serve to our shelter.", author: "Sarah L.", role: "NGO Director" },
+    { quote: "Volunteering is so easy. The app routes me directly from the restaurant to the shelter in minutes.", author: "Michael K.", role: "Delivery Volunteer" }
+  ];
+
   const containerVariants = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
+
   const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 30
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 100
-      }
-    }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
-  return <div className="flex flex-col items-center overflow-hidden">
-      {/* Hero Section */}
-      <section className="w-full relative min-h-[90vh] flex items-center py-20 lg:py-32 bg-white dark:bg-[#0a0a0a]" onMouseMove={handleMouseMove}>
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-[#0a0a0a] dark:via-[#0a0a0a] dark:to-accent-950/20 -z-10" />
-        <motion.div className="absolute inset-0 z-0 hidden md:block" style={{
-        background: backgroundGradient
-      }} />
+
+  return (
+    <div className="flex flex-col items-center overflow-hidden bg-[#fafafa] dark:bg-[#0a0a0a]">
+      
+      {/* 1. HERO SECTION */}
+      <section className="relative w-full min-h-[90vh] flex items-center justify-center pt-32 pb-20 overflow-hidden">
+        {/* Animated Background Gradients & Particles */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/50 via-transparent to-transparent dark:from-primary-900/10" />
+        <motion.div animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute top-1/4 right-1/4 w-[40rem] h-[40rem] rounded-full bg-primary-400/10 blur-[120px] pointer-events-none" />
+        <motion.div animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }} transition={{ duration: 25, repeat: Infinity, ease: "linear" }} className="absolute bottom-1/4 left-1/4 w-[30rem] h-[30rem] rounded-full bg-amber-400/10 blur-[100px] pointer-events-none" />
         
-        {/* Animated Blobs */}
-        <motion.div animate={{
-        scale: [1, 1.2, 1],
-        rotate: [0, 90, 0]
-      }} transition={{
-        duration: 20,
-        repeat: Infinity,
-        ease: "linear"
-      }} className="absolute top-0 right-0 -mr-20 -mt-20 w-[30rem] h-[30rem] rounded-full bg-primary-400/20 blur-[100px]" />
-        <motion.div animate={{
-        scale: [1, 1.3, 1],
-        rotate: [0, -90, 0]
-      }} transition={{
-        duration: 25,
-        repeat: Infinity,
-        ease: "linear",
-        delay: 1
-      }} className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[25rem] h-[25rem] rounded-full bg-accent-400/20 blur-[100px]" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+        {/* Floating Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+           {[...Array(20)].map((_, i) => (
+             <motion.div key={i} className="absolute w-2 h-2 bg-primary-500/20 rounded-full"
+                initial={{ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }}
+                animate={{ y: [null, Math.random() * -500], opacity: [0, 1, 0] }}
+                transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, ease: "linear" }}
+             />
+           ))}
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 relative z-10 text-center flex flex-col items-center">
+          
+          {/* Badges */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex flex-wrap justify-center gap-3 mb-8">
+            <span className="glass-card px-4 py-1.5 rounded-full text-sm font-semibold text-primary-700 dark:text-primary-300 border border-primary-200/50 dark:border-primary-800/50 shadow-sm flex items-center gap-2">
+              🌍 Sustainable
+            </span>
+            <span className="glass-card px-4 py-1.5 rounded-full text-sm font-semibold text-blue-700 dark:text-blue-300 border border-blue-200/50 dark:border-blue-800/50 shadow-sm flex items-center gap-2">
+              🤖 AI Powered
+            </span>
+            <span className="glass-card px-4 py-1.5 rounded-full text-sm font-semibold text-amber-700 dark:text-amber-300 border border-amber-200/50 dark:border-amber-800/50 shadow-sm flex items-center gap-2">
+              ⚡ Real-Time Matching
+            </span>
+          </motion.div>
+
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-[1.1]">
+            One Click. <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-primary-400 to-amber-500">Zero Waste.</span> <br className="hidden md:block" />
+            Maximum Impact.
+          </motion.h1>
+
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+            FoodBridge connects surplus food from homes, restaurants, and events with NGOs and volunteers instantly. Powered by state-of-the-art AI.
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto z-20">
+            <Link to="/register" className="group relative px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(22,163,74,0.3)] flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center gap-2">Start Rescuing Food <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </Link>
+            <Link to="/dashboard" className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-full font-bold text-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-sm">
+              Explore Platform
+            </Link>
+          </motion.div>
+
+          {/* Floating Food Icons */}
+          <motion.div animate={{ y: [-10, 10, -10], rotate: [-5, 5, -5] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/4 left-4 md:left-12 lg:left-32 text-5xl opacity-80 filter drop-shadow-xl hidden sm:block pointer-events-none">🍎</motion.div>
+          <motion.div animate={{ y: [10, -10, 10], rotate: [5, -5, 5] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/3 right-4 md:right-12 lg:right-32 text-6xl opacity-80 filter drop-shadow-xl hidden sm:block pointer-events-none">🥗</motion.div>
+          <motion.div animate={{ y: [-15, 15, -15], rotate: [-10, 10, -10] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-1/4 left-10 md:left-24 lg:left-48 text-5xl opacity-80 filter drop-shadow-xl hidden sm:block pointer-events-none">🍞</motion.div>
+
+        </div>
+      </section>
+
+      {/* 2. DEMO STATISTICS SECTION */}
+      <section className="w-full py-16 bg-white dark:bg-[#0f0f0f] border-y border-gray-100 dark:border-gray-800 relative z-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
+                <div className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-2 tracking-tight">
+                  {stat.value}<span className="text-primary-500">{stat.suffix}</span>
+                </div>
+                <div className="text-gray-500 dark:text-gray-400 font-medium text-sm md:text-base">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+          <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-8 font-light italic">*Statistics shown for demonstration purposes only.</p>
+        </div>
+      </section>
+
+      {/* 3. HOW IT WORKS SECTION */}
+      <section className="w-full py-32 bg-[#fafafa] dark:bg-[#0a0a0a] relative">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">How FoodBridge Works</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">A seamless, 4-step process designed to rescue food at lightning speed.</p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8 relative">
+            {/* Connecting Line (Desktop) */}
+            <div className="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-primary-200 via-primary-500 to-amber-200 dark:from-primary-900 dark:via-primary-500 dark:to-amber-900 z-0" />
             
-            {/* Text Content */}
-            <div className="text-center lg:text-left max-w-2xl z-10">
-              <motion.div initial={{
-              opacity: 0,
-              scale: 0.8,
-              y: -20
-            }} animate={{
-              opacity: 1,
-              scale: 1,
-              y: 0
-            }} transition={{
-              duration: 0.6,
-              type: 'spring'
-            }} className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full glass-card border border-accent-200 dark:border-accent-800/50 text-accent-700 dark:text-accent-300 font-semibold text-sm shadow-xl shadow-accent-500/10">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-500"></span>
-                </span>{t("home.text1")}</motion.div>
-
-              <motion.h1 initial={{
-              opacity: 0,
-              y: 30
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.7,
-              delay: 0.2,
-              type: 'spring'
-            }} className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
-                {t('home.hero_title')} <span className="text-gradient relative inline-block">
-                  {t('home.hero_highlight')}
-                  <motion.svg className="absolute w-full h-3 -bottom-2 left-0 text-primary-400" viewBox="0 0 100 10" preserveAspectRatio="none">
-                    <motion.path initial={{
-                    pathLength: 0
-                  }} animate={{
-                    pathLength: 1
-                  }} transition={{
-                    duration: 1,
-                    delay: 0.8
-                  }} d="M0 5 Q 50 10 100 5" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                  </motion.svg>
-                </span> {t('home.hero_suffix')}
-              </motion.h1>
-              
-              <motion.p initial={{
-              opacity: 0,
-              y: 30
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.7,
-              delay: 0.4
-            }} className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed font-light">
-                {t('home.hero_desc')}
-              </motion.p>
-
-              <motion.div initial={{
-              opacity: 0,
-              y: 30
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} transition={{
-              duration: 0.7,
-              delay: 0.6
-            }} className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <Link to="/register" className="group bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-8 py-4 rounded-full font-bold transition-all shadow-xl shadow-primary-500/30 flex items-center justify-center gap-3 hover:-translate-y-1">
-                  {t('home.cta')} 
-                  <motion.span group-hover={{
-                  x: 5
-                }} transition={{
-                  type: "spring"
-                }}>
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                  </motion.span>
-                </Link>
-                <Link to="/dashboard" className="glass-card text-gray-800 dark:text-gray-200 px-8 py-4 rounded-full font-bold transition-all hover:-translate-y-1 hover:shadow-xl flex justify-center items-center">{t("home.text2")}</Link>
+            {timelineSteps.map((step, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="relative z-10 flex flex-col items-center text-center group">
+                <div className="w-24 h-24 rounded-3xl bg-white dark:bg-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-2 group-hover:border-primary-500/50">
+                  <step.icon className="w-10 h-10 text-primary-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</p>
               </motion.div>
-            </div>
-
-            {/* Visual/Logo Component */}
-            <motion.div initial={{
-            opacity: 0,
-            scale: 0.8,
-            rotate: -5
-          }} animate={{
-            opacity: 1,
-            scale: 1,
-            rotate: 0
-          }} transition={{
-            duration: 1,
-            type: "spring",
-            delay: 0.3
-          }} className="w-full max-w-md lg:max-w-lg relative z-10 hidden md:block">
-              <div className="absolute inset-0 bg-gradient-to-tr from-accent-400 to-primary-400 rounded-full blur-[80px] opacity-30 animate-pulse" />
-              
-              {/* Floating Animation */}
-              <motion.div animate={{
-              y: [-15, 15, -15]
-            }} transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}>
-                <img src="/logo.png" alt="FoodBridge Logo Hero" className="w-full h-auto drop-shadow-2xl relative z-10 rounded-[3rem] border border-white/20 glass" />
-              </motion.div>
-            </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="w-full py-12 bg-primary-600 dark:bg-primary-950 relative z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{
-          once: true,
-          margin: "-50px"
-        }} variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[{
-            label: 'Meals Rescued',
-            value: stats.mealsRescued.toString()
-          }, {
-            label: 'Active NGOs',
-            value: stats.activeNGOs.toString()
-          }, {
-            label: 'Cities Served',
-            value: stats.citiesServed.toString()
-          }, {
-            label: 'Carbon Saved',
-            value: stats.carbonSaved + 'T'
-          }].map((stat, i) => <motion.div key={i} variants={itemVariants} className="text-white">
-                <div className="text-4xl md:text-5xl font-extrabold mb-2">{stat.value}</div>
-                <div className="text-primary-100 font-medium opacity-90">{stat.label}</div>
-              </motion.div>)}
+      {/* 4. PREMIUM FEATURES GRID */}
+      <section className="w-full py-32 bg-white dark:bg-[#0f0f0f] border-t border-gray-100 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="mb-20 md:w-2/3">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Powerful Features Built for Scale</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">Everything you need to seamlessly coordinate surplus food distribution from a single platform.</p>
+          </div>
+
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feat, i) => (
+              <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className={`relative group p-8 rounded-[2rem] bg-[#fafafa] dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 overflow-hidden ${feat.className || ''}`}>
+                <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl ${feat.color} rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none`} />
+                <div className="w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center mb-6 relative z-10">
+                  <feat.icon className="w-7 h-7 text-gray-900 dark:text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 relative z-10">{feat.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6 relative z-10 leading-relaxed">{feat.desc}</p>
+                <ul className="space-y-3 relative z-10">
+                  {feat.points.map((point, j) => (
+                    <li key={j} className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <ChevronRight className="w-4 h-4 text-primary-500 mr-2 shrink-0" /> {point}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="w-full py-32 bg-gray-50 dark:bg-gray-900 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} viewport={{
-          once: true
-        }} className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl font-bold mb-4 dark:text-white">{t("home.text3")}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">{t("home.text4")}</p>
-          </motion.div>
+      {/* 5. IMPACT & TESTIMONIALS */}
+      <section className="w-full py-32 bg-[#fafafa] dark:bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Loved by Communities</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">See how FoodBridge is making a tangible difference.</p>
+          </div>
 
-          <motion.div initial="hidden" whileInView="visible" viewport={{
-          once: true,
-          margin: "-100px"
-        }} variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min md:auto-rows-[250px]">
-            <div className="lg:col-span-2 lg:row-span-2">
-              <FeatureCard icon={<Leaf className="w-12 h-12 text-primary-500" />} title={t('home.feat1_title')} description={t('home.feat1_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-primary-50 to-white dark:from-primary-900/20 dark:to-[#0f0f0f]" />
-            </div>
-            <div className="lg:col-span-1 lg:row-span-1">
-              <FeatureCard icon={<MapPin className="w-8 h-8 text-accent-500" />} title={t('home.feat2_title')} description={t('home.feat2_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-accent-50 to-white dark:from-accent-900/20 dark:to-[#0f0f0f]" />
-            </div>
-            <div className="lg:col-span-1 lg:row-span-1">
-              <FeatureCard icon={<HeartHandshake className="w-8 h-8 text-blue-500" />} title={t('home.feat3_title')} description={t('home.feat3_desc')} variants={itemVariants} className="h-full min-h-[250px] flex flex-col justify-center bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-[#0f0f0f]" />
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((test, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none flex flex-col justify-between">
+                <div>
+                  <Quote className="w-10 h-10 text-primary-200 dark:text-primary-900 mb-6" />
+                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium italic mb-8">"{test.quote}"</p>
+                </div>
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">{test.author}</div>
+                  <div className="text-sm text-primary-600 dark:text-primary-400 font-medium">{test.role}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. FINAL CTA SECTION */}
+      <section className="w-full relative py-32 overflow-hidden bg-gray-900 dark:bg-black">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/50 via-gray-900 to-amber-900/30" />
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
+        
+        <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
+            Together We Can <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-400">End Food Waste.</span>
+          </motion.h2>
+          <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+            Join thousands of restaurants, NGOs, and volunteers making a real impact every single day.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+             <Link to="/register" className="inline-flex items-center justify-center gap-2 px-10 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:bg-gray-100 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+               Join FoodBridge
+             </Link>
           </motion.div>
         </div>
       </section>
-    </div>;
+
+    </div>
+  );
 };
-const FeatureCard = ({
-  icon,
-  title,
-  description,
-  variants,
-  className = ""
-}) => <motion.div variants={variants} whileHover={{
-  scale: 0.98
-}} className={`relative p-8 rounded-[2rem] glass-card group overflow-hidden border border-gray-200 dark:border-gray-800 ${className}`}>
-    <div className="absolute top-0 right-0 -mr-10 -mt-10 w-32 h-32 rounded-full bg-primary-500/10 blur-2xl group-hover:bg-primary-500/20 transition-colors" />
-    <motion.div whileHover={{
-    rotate: 5,
-    scale: 1.1
-  }} className="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-primary-200 dark:border-primary-800">
-      {icon}
-    </motion.div>
-    <h3 className="text-2xl font-bold mb-4 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{title}</h3>
-    <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">{description}</p>
-  </motion.div>;
+
 export default Home;
