@@ -83,7 +83,7 @@ const Contact = () => {
             {/* Map Placeholder */}
             <div className="glass h-64 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden relative group">
               <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse" />
-              <iframe title={t("contact.attr12")} src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531550415!3d-37.81720974201476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sus!4v1611815147514!5m2!1sen!2sus" className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-500" loading="lazy" />
+              <iframe title={t("contact.attr12")} src="https://maps.google.com/maps?q=Harishankarpuram,%20Gwalior&t=&z=13&ie=UTF8&iwloc=&output=embed" className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-500" loading="lazy" />
             </div>
           </motion.div>
 

@@ -79,15 +79,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-accent-500 shrink-0" />
-                <a href="mailto:support@foodbridge.com" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors text-sm">support@foodbridge.com</a>
+                <a href="mailto:dhumalhema4@gmail.com" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors text-sm">dhumalhema4@gmail.com</a>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-accent-500 shrink-0" />
-                <span className="text-gray-600 dark:text-gray-400 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-600 dark:text-gray-400 text-sm">+91 74899 12494</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-accent-500 shrink-0 mt-0.5" />
-                <span className="text-gray-600 dark:text-gray-400 text-sm leading-tight">123 Impact Way<br/>Sustainability City, SC 90210</span>
+                <span className="text-gray-600 dark:text-gray-400 text-sm leading-tight">Harishankarpuram<br/>Gwalior 474001</span>
               </li>
             </ul>
           </div>
