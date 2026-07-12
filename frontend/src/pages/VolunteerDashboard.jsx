@@ -179,19 +179,21 @@ const DeliveryCard = ({
           <MapPin size={16} className="mr-2 text-primary-500" />
           <span>
             {t('volunteer_dashboard.from')} {donation.donor?.name || 'Donor'}
-            {donation.distance !== undefined && <span className="ml-2 font-semibold text-primary-600 dark:text-primary-400">({donation.distance.toFixed(1)}{t("volunteer_dashboard.text1")}</span>}
+            {(donation.distance !== undefined && donation.distance !== null && !isNaN(donation.distance)) && 
+              <span className="ml-2 font-semibold text-primary-600 dark:text-primary-400">({Number(donation.distance).toFixed(1)}{t("volunteer_dashboard.text1")}</span>
+            }
           </span>
         </div>
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <Users size={16} className="mr-2 text-primary-500" />
-          <span>{t('volunteer_dashboard.feeds')} {donation.foodBrainData?.peopleFed || parseInt(donation.quantity) || 5} {t('volunteer_dashboard.people')}{t("volunteer_dashboard.text2")}{donation.quantity})</span>
+          <span>{t('volunteer_dashboard.feeds')} {donation.foodBrainData?.peopleFed || parseInt(donation.quantity || 0) || 5} {t('volunteer_dashboard.people')}{t("volunteer_dashboard.text2")}{donation.quantity})</span>
         </div>
         <div className="flex items-center text-sm text-red-500 dark:text-red-400 font-medium">
           <Clock size={16} className="mr-2" />
-          <span>{t('volunteer_dashboard.deliver_before')} {new Date(donation.expiryTime).toLocaleTimeString([], {
+          <span>{t('volunteer_dashboard.deliver_before')} {donation.expiryTime ? new Date(donation.expiryTime).toLocaleTimeString([], {
               hour: '2-digit',
               minute: '2-digit'
-            })}</span>
+            }) : 'N/A'}</span>
         </div>
       </div>
 
