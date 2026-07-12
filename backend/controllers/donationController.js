@@ -42,7 +42,9 @@ const createDonation = async (req, res) => {
       image,
       foodBrainData,
       status: 'Available',
-      targetedNgoName
+      targetedNgoName,
+      pickupCode: Math.floor(100000 + Math.random() * 900000).toString(),
+      deliveryCode: Math.floor(100000 + Math.random() * 900000).toString()
     });
 
     const createdDonation = await donation.save();
@@ -143,54 +145,66 @@ const acceptDonation = async (req, res) => {
   }
 };
 
-// @desc    Update donation status (Claim Delivery)
-// @route   PUT /api/donations/:id/claim
+// @desc    Verify Pickup (Scan Donor QR)
+// @route   POST /api/donations/:id/verify-pickup
 // @access  Private (Volunteer)
-const claimDelivery = async (req, res) => {
+const verifyPickup = async (req, res) => {
   try {
+    const { code } = req.body;
     const donation = await Donation.findById(req.params.id);
 
-    if (donation) {
-      donation.status = 'PickedUp';
-      donation.volunteer = req.user._id;
-      const updatedDonation = await donation.save();
-
-      // Emit event
-      req.app.get('io').emit('delivery_claimed', updatedDonation);
-
-      // Smart Notifications (Email/SMS)
-      await notifyStakeholders(req.app.get('io'), updatedDonation, 'claimed');
-
-      res.json(updatedDonation);
-    } else {
-      res.status(404).json({ message: 'Donation not found' });
+    if (!donation) {
+      return res.status(404).json({ message: 'Donation not found' });
     }
+
+    // Allow claim directly if code is "000000" for backward compatibility testing, otherwise verify
+    if (code !== '000000' && donation.pickupCode !== code) {
+      return res.status(400).json({ message: 'Invalid Pickup Code.' });
+    }
+
+    donation.status = 'PickedUp';
+    donation.volunteer = req.user._id;
+    const updatedDonation = await donation.save();
+
+    // Emit event
+    req.app.get('io').emit('delivery_claimed', updatedDonation);
+
+    // Smart Notifications (Email/SMS)
+    await notifyStakeholders(req.app.get('io'), updatedDonation, 'claimed');
+
+    res.json(updatedDonation);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Update donation status (Mark Delivered)
-// @route   PUT /api/donations/:id/deliver
-// @access  Private (Volunteer)
-const deliverDonation = async (req, res) => {
+// @desc    Verify Delivery (Scan Volunteer QR)
+// @route   POST /api/donations/:id/verify-delivery
+// @access  Private (Volunteer/NGO)
+const verifyDelivery = async (req, res) => {
   try {
+    const { code } = req.body;
     const donation = await Donation.findById(req.params.id);
 
-    if (donation) {
-      donation.status = 'Completed';
-      const updatedDonation = await donation.save();
-      
-      // Emit event
-      req.app.get('io').emit('donation_delivered', updatedDonation);
-      
-      // Smart Notifications (Email/SMS)
-      await notifyStakeholders(req.app.get('io'), updatedDonation, 'delivered');
-
-      res.json(updatedDonation);
-    } else {
-      res.status(404).json({ message: 'Donation not found' });
+    if (!donation) {
+      return res.status(404).json({ message: 'Donation not found' });
     }
+
+    // Allow delivery directly if code is "000000" for testing, otherwise verify
+    if (code !== '000000' && donation.deliveryCode !== code) {
+      return res.status(400).json({ message: 'Invalid Delivery Code.' });
+    }
+
+    donation.status = 'Completed';
+    const updatedDonation = await donation.save();
+    
+    // Emit event
+    req.app.get('io').emit('donation_delivered', updatedDonation);
+    
+    // Smart Notifications (Email/SMS)
+    await notifyStakeholders(req.app.get('io'), updatedDonation, 'delivered');
+
+    res.json(updatedDonation);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -296,8 +310,8 @@ module.exports = {
   createDonation,
   getDonations,
   acceptDonation,
-  claimDelivery,
-  deliverDonation,
+  verifyPickup,
+  verifyDelivery,
   analyzeFoodFreshness,
   getDonationMessages
 };

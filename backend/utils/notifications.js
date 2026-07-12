@@ -1,9 +1,18 @@
 // Mock Notification Service for FoodBridge
 // In a real environment, you would use actual credentials from process.env
 
-// We still import them to ensure they exist (as per dependencies)
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
+
+// Initialize Twilio Client if credentials are provided
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+
+let twilioClient = null;
+if (twilioAccountSid && twilioAuthToken) {
+  twilioClient = twilio(twilioAccountSid, twilioAuthToken);
+}
 
 /**
  * Mocks sending an email
@@ -23,6 +32,24 @@ const sendEmailNotification = async ({ to, subject, body }) => {
  * Mocks sending an SMS
  */
 const sendSMSNotification = async ({ to, message }) => {
+  if (twilioClient && twilioPhoneNumber) {
+    try {
+      const response = await twilioClient.messages.create({
+        body: message,
+        from: twilioPhoneNumber,
+        to: to
+      });
+      console.log(`\n✅ REAL SMS NOTIFICATION SENT to ${to}`);
+      console.log(`Message SID: ${response.sid}\n`);
+      return true;
+    } catch (error) {
+      console.error('\n❌ FAILED TO SEND REAL SMS NOTIFICATION:');
+      console.error(error.message);
+      console.log('Falling back to mock SMS logging...\n');
+    }
+  }
+
+  // Fallback to mock logging
   console.log('\n=============================================');
   console.log('📱 MOCK SMS NOTIFICATION SENT');
   console.log(`To: ${to}`);

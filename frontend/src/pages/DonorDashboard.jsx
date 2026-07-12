@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Camera, Send, CheckCircle, MapPin, Clock, MessageCircle, Truck, Navigation, Sparkles } from 'lucide-react';
+import { Camera, Send, CheckCircle, MapPin, Clock, MessageCircle, Truck, Navigation, Sparkles, QrCode } from 'lucide-react';
 import MapComponent from '../components/MapComponent';
 import { motion, AnimatePresence } from 'framer-motion';
 import { triggerNotification } from '../components/ToastProvider';
@@ -9,6 +9,7 @@ import LiveTrackingMap from '../components/LiveTrackingMap';
 import RadarMapComponent from '../components/RadarMapComponent';
 import FreshnessBadge from '../components/FreshnessBadge';
 import VerifiedBadge from '../components/VerifiedBadge';
+import QRCodeModal from '../components/QRCodeModal';
 import { useTranslation } from 'react-i18next';
 import { rankNGOs } from '../utils/distance';
 import { Star, Package } from 'lucide-react';
@@ -42,6 +43,7 @@ const DonorDashboard = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedDonationId, setSelectedDonationId] = useState(null);
   const [trackingDonation, setTrackingDonation] = useState(null);
+  const [showQRForDonation, setShowQRForDonation] = useState(null);
 
   // Nearby NGOs State
   const [donorLocation, setDonorLocation] = useState({
@@ -432,6 +434,13 @@ const DonorDashboard = () => {
                       <MessageCircle size={20} /> {t('volunteer_dashboard.open_chat')}
                     </motion.button>
                     
+                    {donation.status === 'Accepted' && <motion.button whileHover={{
+              scale: 1.02
+            }} whileTap={{
+              scale: 0.98
+            }} onClick={() => setShowQRForDonation(donation)} className="w-full mt-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30">
+                        <QrCode size={20} /> Show Handoff QR
+                    </motion.button>}
                     {donation.status === 'PickedUp' && <motion.button whileHover={{
               scale: 1.02
             }} whileTap={{
@@ -538,6 +547,15 @@ const DonorDashboard = () => {
             </motion.div>
           </div>}
       </AnimatePresence>
+
+      {/* QR Code Modal */}
+      <QRCodeModal 
+        isOpen={!!showQRForDonation} 
+        onClose={() => setShowQRForDonation(null)} 
+        code={showQRForDonation?.pickupCode || ''} 
+        title="Pickup Verification" 
+        subtitle="Show this code to the arriving Volunteer" 
+      />
     </div>;
 };
 export default DonorDashboard;

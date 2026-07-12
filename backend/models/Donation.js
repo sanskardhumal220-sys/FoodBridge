@@ -43,6 +43,12 @@ const donationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  pickupCode: {
+    type: String,
+  },
+  deliveryCode: {
+    type: String,
+  },
   volunteer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

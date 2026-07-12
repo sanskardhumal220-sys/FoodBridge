@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MapPin, Clock, Users, Leaf, Check, Flame, MessageCircle, Map as MapIcon, List, Camera, Navigation } from 'lucide-react';
+import { MapPin, Clock, Users, Leaf, Check, Flame, MessageCircle, Map as MapIcon, List, Camera, Navigation, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatModal from '../components/ChatModal';
 import LiveTrackingMap from '../components/LiveTrackingMap';
 import RadarMapComponent from '../components/RadarMapComponent';
 import FreshnessBadge from '../components/FreshnessBadge';
+import QRScannerModal from '../components/QRScannerModal';
 import { useTranslation } from 'react-i18next';
 import { triggerNotification } from '../components/ToastProvider';
 const NGODashboard = () => {
@@ -26,6 +27,9 @@ const NGODashboard = () => {
 
   // Tracking State
   const [trackingDonation, setTrackingDonation] = useState(null);
+
+  // QR Handoff State
+  const [showScannerForDonation, setShowScannerForDonation] = useState(null);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('userInfo')) || {
       name: 'Demo NGO',
@@ -106,14 +110,15 @@ const NGODashboard = () => {
     setSelectedDonationId(id);
     setIsChatOpen(true);
   };
-  const verifyDelivery = async id => {
+  const verifyDelivery = async (id, code) => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/deliver`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/verify-delivery`, { code }, {
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
       });
       fetchData(userInfo);
+      setShowScannerForDonation(null);
       triggerNotification(`✅ Delivery Verified successfully!`);
     } catch (error) {
       alert('Failed to verify delivery: ' + (error.response?.data?.message || error.message));
@@ -287,8 +292,8 @@ const NGODashboard = () => {
                   {donation.status === 'PickedUp' && <div className="flex flex-col gap-2 mt-3">
                       <button onClick={() => setTrackingDonation(donation)} className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30">
                         <Navigation size={20} />{t("n_g_o_dashboard.text7")}</button>
-                      <button onClick={() => verifyDelivery(donation._id)} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/30">
-                        <Check size={20} />{t("n_g_o_dashboard.text8")}</button>
+                      <button onClick={() => setShowScannerForDonation(donation)} className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/30">
+                        <Camera size={20} /> Scan Delivery QR</button>
                     </div>}
                 </div>
               </motion.div>)}
@@ -314,6 +319,14 @@ const NGODashboard = () => {
             </motion.div>
           </div>}
       </AnimatePresence>
+
+      <QRScannerModal 
+        isOpen={!!showScannerForDonation} 
+        onClose={() => setShowScannerForDonation(null)}
+        onScanSuccess={(code) => verifyDelivery(showScannerForDonation._id, code)}
+        title="Scan Volunteer's QR Code"
+        subtitle="Verify the delivery by scanning the volunteer's code"
+      />
     </div>;
 };
 export default NGODashboard;

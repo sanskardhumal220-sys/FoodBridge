@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MapPin, Clock, Users, Leaf, Truck, CheckCircle2, MessageCircle, Camera, Navigation } from 'lucide-react';
+import { MapPin, Clock, Users, Leaf, Truck, CheckCircle2, MessageCircle, Camera, Navigation, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LiveTrackingMap from '../components/LiveTrackingMap';
 import { triggerNotification } from '../components/ToastProvider';
 import ChatModal from '../components/ChatModal';
 import { useTranslation } from 'react-i18next';
 import FreshnessBadge from '../components/FreshnessBadge';
+import QRScannerModal from '../components/QRScannerModal';
+import QRCodeModal from '../components/QRCodeModal';
 const VolunteerDashboard = () => {
   const { t } = useTranslation();
   const [availableDeliveries, setAvailableDeliveries] = useState([]);
@@ -20,6 +22,10 @@ const VolunteerDashboard = () => {
 
   // Tracking State
   const [trackingDonation, setTrackingDonation] = useState(null);
+
+  // QR Handoff State
+  const [showScannerForDonation, setShowScannerForDonation] = useState(null);
+  const [showQRForDonation, setShowQRForDonation] = useState(null);
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     setUser(userInfo);
@@ -56,20 +62,20 @@ const VolunteerDashboard = () => {
     }
     setLoading(false);
   };
-  const claimDelivery = async id => {
+  const verifyPickup = async (id, code) => {
     try {
       const {
         data
-      } = await axios.put(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/claim`, {}, {
+      } = await axios.post(`${import.meta.env.VITE_API_URL || (import.meta.env.VITE_API_URL || 'http://localhost:5000') + ''}/api/donations/${id}/verify-pickup`, { code }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       });
       fetchDonations(user); // Refresh lists
-
-      triggerNotification(`🚚 Alert: You have successfully claimed the delivery for ${data.foodType}!`);
+      setShowScannerForDonation(null);
+      triggerNotification(`🚚 Alert: You have successfully verified pickup for ${data.foodType}!`);
     } catch (error) {
-      alert('Failed to claim delivery: ' + (error.response?.data?.message || error.message));
+      alert('Failed to verify pickup: ' + (error.response?.data?.message || error.message));
     }
   };
   const markDelivered = async id => {
@@ -103,7 +109,7 @@ const VolunteerDashboard = () => {
             {myDeliveries.length === 0 ? <div className="glass p-8 text-center rounded-3xl">
                 <p className="text-gray-500 dark:text-gray-400">{t('volunteer_dashboard.no_active_deliveries')}</p>
               </div> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {myDeliveries.map((donation, index) => <DeliveryCard key={donation._id} donation={donation} index={index} actionText={t('volunteer_dashboard.mark_delivered')} actionIcon={<CheckCircle2 size={20} />} onAction={() => markDelivered(donation._id)} onChat={() => openChat(donation._id)} onTrack={() => setTrackingDonation(donation)} btnClass="bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/30" />)}
+                {myDeliveries.map((donation, index) => <DeliveryCard key={donation._id} donation={donation} index={index} actionText="Show Delivery QR" actionIcon={<QrCode size={20} />} onAction={() => setShowQRForDonation(donation)} onChat={() => openChat(donation._id)} onTrack={() => setTrackingDonation(donation)} btnClass="bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/30" />)}
               </div>}
           </div>
 
@@ -113,7 +119,7 @@ const VolunteerDashboard = () => {
             {availableDeliveries.length === 0 ? <div className="glass p-8 text-center rounded-3xl">
                 <p className="text-gray-500 dark:text-gray-400">{t('volunteer_dashboard.no_new_donations')}</p>
               </div> : <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {availableDeliveries.map((donation, index) => <DeliveryCard key={donation._id} donation={donation} index={index} actionText="Claim Pickup" actionIcon={<CheckCircle2 size={20} />} onAction={() => claimDelivery(donation._id)} btnClass="bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30" />)}
+                {availableDeliveries.map((donation, index) => <DeliveryCard key={donation._id} donation={donation} index={index} actionText="Scan to Pickup" actionIcon={<Camera size={20} />} onAction={() => setShowScannerForDonation(donation)} btnClass="bg-primary-500 hover:bg-primary-600 shadow-lg shadow-primary-500/30" />)}
               </div>}
           </div>
 
@@ -139,6 +145,22 @@ const VolunteerDashboard = () => {
             </motion.div>
           </div>}
       </AnimatePresence>
+
+      <QRScannerModal 
+        isOpen={!!showScannerForDonation} 
+        onClose={() => setShowScannerForDonation(null)}
+        onScanSuccess={(code) => verifyPickup(showScannerForDonation._id, code)}
+        title="Scan Donor's QR Code"
+        subtitle="Verify the pickup by scanning the donor's code"
+      />
+
+      <QRCodeModal 
+        isOpen={!!showQRForDonation}
+        onClose={() => setShowQRForDonation(null)}
+        code={showQRForDonation?.deliveryCode || ''}
+        title="Delivery Verification"
+        subtitle="Show this code to the NGO for delivery"
+      />
     </div>;
 };
 const DeliveryCard = ({
