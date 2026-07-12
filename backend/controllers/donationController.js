@@ -157,8 +157,8 @@ const verifyPickup = async (req, res) => {
       return res.status(404).json({ message: 'Donation not found' });
     }
 
-    // Allow claim directly if code is "000000" for backward compatibility testing, otherwise verify
-    if (code !== '000000' && donation.pickupCode !== code) {
+    // Allow claim directly if code is "000000", or if it's a legacy donation without a code
+    if (donation.pickupCode && code !== '000000' && donation.pickupCode !== code) {
       return res.status(400).json({ message: 'Invalid Pickup Code.' });
     }
 
@@ -190,8 +190,8 @@ const verifyDelivery = async (req, res) => {
       return res.status(404).json({ message: 'Donation not found' });
     }
 
-    // Allow delivery directly if code is "000000" for testing, otherwise verify
-    if (code !== '000000' && donation.deliveryCode !== code) {
+    // Allow delivery directly if code is "000000", or if it's a legacy donation without a code
+    if (donation.deliveryCode && code !== '000000' && donation.deliveryCode !== code) {
       return res.status(400).json({ message: 'Invalid Delivery Code.' });
     }
 
