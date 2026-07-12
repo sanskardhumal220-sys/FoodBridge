@@ -158,74 +158,26 @@ const DonorDashboard = () => {
     setIsChatOpen(true);
   };
 
-  // Mock NGOs for Radar Map & Recommendations
-  const mockNgos = [{
-    id: 'g1',
-    lat: 26.2183,
-    lng: 78.1828,
-    name: 'Ramakrishna Mission Ashrama Sharada Balgram',
-    needed: 'Grains, Cooked Food',
-    urgency: 'High',
-    capacity: 500,
-    verified: true,
-    trustScore: 98
-  }, {
-    id: 'g2',
-    lat: 26.2300,
-    lng: 78.1900,
-    name: 'Narayan Seva Sansthan',
-    needed: 'Fresh Produce',
-    urgency: 'Medium',
-    capacity: 200,
-    verified: true,
-    trustScore: 95
-  }, {
-    id: 'g3',
-    lat: 26.2050,
-    lng: 78.1650,
-    name: 'The Power Of Education Foundations',
-    needed: 'Leftover Meals',
-    urgency: 'Low',
-    capacity: 150,
-    verified: false,
-    trustScore: 80
-  }, {
-    id: 'g4',
-    lat: 26.2350,
-    lng: 78.2250,
-    name: 'Dada Maharaj Ashram',
-    needed: 'Bulk Rice & Dal',
-    urgency: 'High',
-    capacity: 1000,
-    verified: true,
-    trustScore: 99
-  }, {
-    id: 'g5',
-    lat: 26.2500,
-    lng: 78.1750,
-    name: 'Vaibhav Foundation India',
-    needed: 'Canned Goods',
-    urgency: 'Medium',
-    capacity: 300,
-    verified: false,
-    trustScore: 85
-  }, {
-    id: 'g6',
-    lat: 26.2100,
-    lng: 78.1950,
-    name: 'Youthpray Foundation',
-    needed: 'Fresh Produce',
-    urgency: 'Low',
-    capacity: 100,
-    verified: true,
-    trustScore: 92
-  }];
+  const [realNgos, setRealNgos] = useState([]);
+
+  useEffect(() => {
+    const fetchNGOs = async () => {
+      try {
+        const { data } = await axios.get((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/public/ngos');
+        setRealNgos(data);
+      } catch (err) {
+        console.error('Failed to fetch NGOs', err);
+      }
+    };
+    fetchNGOs();
+  }, []);
+
   useEffect(() => {
     if (activeTab === 'nearby_ngos') {
-      const ranked = rankNGOs(mockNgos, donorLocation, 0); // using 0 for generic recommendation
+      const ranked = rankNGOs(realNgos, donorLocation, 0); // using 0 for generic recommendation
       setRecommendedNgos(ranked);
     }
-  }, [activeTab, donorLocation]);
+  }, [activeTab, donorLocation, realNgos]);
   const handleLocateDonor = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -509,6 +461,14 @@ const DonorDashboard = () => {
           <div className="lg:w-96 glass p-4 sm:p-6 rounded-3xl h-[400px] lg:h-[700px] flex flex-col overflow-hidden">
             <h3 className="text-xl font-bold dark:text-white mb-4 flex items-center gap-2">
               <Star className="text-accent-500" />{t("donor_dashboard.text17")}</h3>
+            
+            {recommendedNgos.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
+                <Package size={48} className="text-gray-400 mb-4" />
+                <h4 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">No NGOs Found</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">There are currently no verified NGOs registered in your area. Once NGOs register and set their location, they will appear here.</p>
+              </div>
+            ) : (
             <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
               {recommendedNgos.map((ngo, idx) => <motion.div initial={{
             opacity: 0,
@@ -554,6 +514,7 @@ const DonorDashboard = () => {
             }} className={`w-full mt-3 py-2 rounded-xl text-sm font-bold transition-colors ${idx === 0 ? 'bg-primary-500 text-white hover:bg-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}>{t("donor_dashboard.text24")}</button>
                 </motion.div>)}
             </div>
+            )}
           </div>
         </div>}
 

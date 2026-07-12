@@ -22,7 +22,11 @@ const Login = () => {
       window.dispatchEvent(new Event('storage')); // Trigger navbar update
       navigate('/dashboard');
     } catch (error) {
-      alert('Login failed: ' + (error.response?.data?.message || error.message));
+      if (error.message === 'Network Error') {
+        alert('Login failed: Network Error. Cannot connect to the backend server. Please ensure the backend and tunnel are running.');
+      } else {
+        alert('Login failed: ' + (error.response?.data?.message || error.message));
+      }
     }
   };
 

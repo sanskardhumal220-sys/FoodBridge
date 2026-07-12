@@ -42,6 +42,30 @@ const getPublicStats = async (req, res) => {
   }
 };
 
+const getNGOs = async (req, res) => {
+  try {
+    const ngos = await User.find({ role: 'NGO', verificationStatus: 'Approved' }).select('-password');
+    // Map to structure expected by frontend mock
+    const formattedNgos = ngos.map(ngo => ({
+      id: ngo._id,
+      lat: ngo.location?.lat,
+      lng: ngo.location?.lng,
+      name: ngo.name,
+      needed: 'Food Donations',
+      urgency: 'Medium',
+      capacity: 100,
+      verified: true,
+      trustScore: ngo.trustScore || 100
+    })).filter(ngo => ngo.lat && ngo.lng); // Only include NGOs with location
+    
+    res.json(formattedNgos);
+  } catch (error) {
+    console.error('Error fetching NGOs:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
-  getPublicStats
+  getPublicStats,
+  getNGOs
 };
