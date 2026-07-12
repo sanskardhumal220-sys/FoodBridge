@@ -28,7 +28,7 @@ const QRCodeModal = ({ isOpen, onClose, code, title, subtitle }) => {
           </div>
 
           <div className="bg-white p-6 rounded-2xl flex justify-center items-center mx-auto w-48 h-48 shadow-inner border border-gray-100 mb-6">
-            <QRCodeSVG value={code} size={160} level="H" />
+            <QRCodeSVG value={code} size={160} level="L" />
           </div>
 
           <div className="text-center">

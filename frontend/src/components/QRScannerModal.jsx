@@ -11,7 +11,16 @@ const QRScannerModal = ({ isOpen, onClose, onScanSuccess, title, subtitle }) => 
     if (isOpen) {
       const scanner = new Html5QrcodeScanner(
         "reader",
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { 
+          fps: 10, 
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            return {
+              width: Math.floor(minEdge * 0.7),
+              height: Math.floor(minEdge * 0.7)
+            };
+          }
+        },
         false
       );
 
@@ -66,8 +75,8 @@ const QRScannerModal = ({ isOpen, onClose, onScanSuccess, title, subtitle }) => 
             <p className="text-gray-500 dark:text-gray-400 mt-1">{subtitle || 'Align the QR code within the frame.'}</p>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border-2 border-primary-500/30 mb-6 bg-black relative">
-             <div id="reader" className="w-full"></div>
+          <div className="rounded-2xl border-2 border-primary-500/30 mb-6 bg-black relative w-full overflow-hidden min-h-[300px] flex items-center justify-center">
+             <div id="reader" className="w-full h-full text-white"></div>
           </div>
 
           <div className="relative">
