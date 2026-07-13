@@ -46,10 +46,15 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-sm uppercase tracking-wider">Platform</h4>
             <ul className="space-y-4">
-              {['Dashboard', 'Start Donating', 'NGO Radar', 'Live Tracking'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
-                    {item}
+              {[
+                { name: 'Dashboard', path: '/dashboard' }, 
+                { name: 'Start Donating', path: '/dashboard' }, 
+                { name: 'NGO Radar', path: '/dashboard' }, 
+                { name: 'Live Tracking', path: '/dashboard' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.path} className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -60,10 +65,15 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-sm uppercase tracking-wider">Resources</h4>
             <ul className="space-y-4">
-              {['About Us', 'Help Center', 'FAQ', 'Feedback'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
-                    {item}
+              {[
+                { name: 'About Us', path: '/about' }, 
+                { name: 'Help Center', path: '/support' }, 
+                { name: 'FAQ', path: '/faq' }, 
+                { name: 'Feedback', path: '/feedback' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.path} className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -74,10 +84,14 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-sm uppercase tracking-wider">Legal</h4>
             <ul className="space-y-4">
-              {['Terms of Service', 'Privacy Policy', 'Cookie Policy'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
-                    {item}
+              {[
+                { name: 'Terms of Service', path: '/terms' }, 
+                { name: 'Privacy Policy', path: '/privacy' }, 
+                { name: 'Cookie Policy', path: '/privacy' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link to={item.path} className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
+                    {item.name}
                   </Link>
                 </li>
               ))}
