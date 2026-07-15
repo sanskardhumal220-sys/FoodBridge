@@ -24,6 +24,7 @@ import ToastProvider from './components/ToastProvider';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import AnimatedPage from './components/AnimatedPage';
+import { Toaster } from 'react-hot-toast';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -61,6 +62,7 @@ function App() {
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
         <CustomCursor />
         <ToastProvider />
+        <Toaster position="bottom-right" />
         <Navbar />
         <main className="flex-grow pt-16">
           <AnimatedRoutes />
