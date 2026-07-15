@@ -1,141 +1,101 @@
-import { useTranslation } from "react-i18next";
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Upload, PartyPopper, RefreshCw } from 'lucide-react';
-const CATEGORIES = ['Website Experience', 'Donation Process', 'NGO Operations', 'Volunteer Logistics', 'FoodBrain AI Accuracy', 'General Suggestions'];
+import { MessageSquarePlus, Send } from 'lucide-react';
+import toast from 'react-hot-toast';
+
 const Feedback = () => {
-  const { t } = useTranslation();
-
-  const [rating, setRating] = useState(0);
-  const [hoveredRating, setHoveredRating] = useState(0);
-  const [category, setCategory] = useState('');
-  const [message, setMessage] = useState('');
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const handleSubmit = e => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (rating === 0) {
-      alert("Please select a rating.");
-      return;
-    }
     setIsSubmitting(true);
-
-    // Simulate API submission
+    
+    // Simulate API call
     setTimeout(() => {
+      toast.success("Thank you for your feedback!");
+      setFormData({ name: '', email: '', message: '' });
       setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1500);
+    }, 1000);
   };
-  const handleReset = () => {
-    setRating(0);
-    setCategory('');
-    setMessage('');
-    setIsAnonymous(false);
-    setIsSuccess(false);
-  };
-  return <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12 lg:py-24 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-200/20 dark:bg-primary-900/10 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-200/20 dark:bg-accent-900/10 rounded-full blur-3xl -z-10" />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Hero Section */}
-        <motion.div initial={{
-        opacity: 0,
-        y: -20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">{t("feedback.text1")}</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">{t("feedback.text2")}</p>
-        </motion.div>
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden flex items-center justify-center">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-orange-400/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-400/10 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* Form Container */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        delay: 0.1
-      }} className="glass p-8 md:p-12 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl relative">
-          {isSuccess ? <motion.div initial={{
-          opacity: 0,
-          scale: 0.9
-        }} animate={{
-          opacity: 1,
-          scale: 1
-        }} className="flex flex-col items-center justify-center text-center py-16">
-              <div className="w-24 h-24 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mb-6">
-                <PartyPopper className="w-12 h-12 text-green-500" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t("feedback.text3")}</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">{t("feedback.text4")}</p>
-              <button onClick={handleReset} className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-full hover:scale-105 transition-transform">{t("feedback.text5")}</button>
-            </motion.div> : <form onSubmit={handleSubmit} className="space-y-8">
-              
-              {/* Star Rating */}
-              <div className="text-center">
-                <label className="block text-lg font-bold text-gray-900 dark:text-white mb-4">{t("feedback.text6")}</label>
-                <div className="flex justify-center gap-2">
-                  {[1, 2, 3, 4, 5].map(star => <button type="button" key={star} className="focus:outline-none transition-transform hover:scale-110" onMouseEnter={() => setHoveredRating(star)} onMouseLeave={() => setHoveredRating(0)} onClick={() => setRating(star)}>
-                      <Star className={`w-12 h-12 ${star <= (hoveredRating || rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-700'} transition-colors duration-200`} />
-                    </button>)}
-                </div>
-              </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl w-full relative z-10 glass p-8 md:p-12 rounded-3xl border border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 shadow-xl"
+      >
+        <div className="text-center mb-10">
+          <div className="inline-block p-4 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-4">
+            <MessageSquarePlus className="w-10 h-10 text-orange-500" />
+          </div>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">
+            Send Feedback
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            We value your thoughts. Let us know how we can improve FoodBridge.
+          </p>
+        </div>
 
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("feedback.text7")}</label>
-                <select required value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white">
-                  <option value="" disabled>{t("feedback.text8")}</option>
-                  {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
-              </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+            <input 
+              type="text" 
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-shadow shadow-sm"
+              placeholder="Your Name"
+            />
+          </div>
 
-              {/* Message Box */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("feedback.text9")}</label>
-                <textarea required rows="5" value={message} onChange={e => setMessage(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none dark:text-white resize-none" placeholder={t("feedback.attr10")}></textarea>
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+            <input 
+              type="email" 
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-shadow shadow-sm"
+              placeholder="you@example.com"
+            />
+          </div>
 
-              {/* Upload & Anonymous Row */}
-              <div className="grid md:grid-cols-2 gap-6 items-end">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("feedback.text11")}<span className="text-gray-400 font-normal">{t("feedback.text12")}</span>
-                  </label>
-                  <div className="relative">
-                    <input type="file" className="hidden" id="screenshot-upload" accept="image/*" />
-                    <label htmlFor="screenshot-upload" className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 hover:border-primary-500 hover:text-primary-500 cursor-pointer transition-colors">
-                      <Upload size={18} />{t("feedback.text13")}</label>
-                  </div>
-                </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
+            <textarea 
+              required
+              rows={4}
+              value={formData.message}
+              onChange={(e) => setFormData({...formData, message: e.target.value})}
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:text-white transition-shadow shadow-sm resize-none"
+              placeholder="Tell us what you think..."
+            />
+          </div>
 
-                <div className="flex items-center h-[52px] px-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                  <label className="flex items-center gap-3 cursor-pointer w-full">
-                    <input type="checkbox" checked={isAnonymous} onChange={e => setIsAnonymous(e.target.checked)} className="w-5 h-5 rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("feedback.text14")}</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                <button type="button" onClick={handleReset} className="px-6 py-4 rounded-xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 w-1/3">
-                  <RefreshCw size={18} />{t("feedback.text15")}</button>
-                <button type="submit" disabled={isSubmitting} className="w-2/3 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center gap-2 disabled:opacity-70">
-                  {isSubmitting ? <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Submit Feedback"}
-                </button>
-              </div>
-
-            </form>}
-        </motion.div>
-
-      </div>
-    </div>;
+          <button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-6 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-orange-500/25 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? (
+              <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                Submit Feedback
+                <Send className="w-5 h-5" />
+              </>
+            )}
+          </button>
+        </form>
+      </motion.div>
+    </div>
+  );
 };
+
 export default Feedback;

@@ -14,6 +14,7 @@ import Feedback from './pages/Feedback';
 import ReportIssue from './pages/ReportIssue';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
+import HelpCenter from './pages/HelpCenter';
 import DonateInfo from './pages/DonateInfo';
 import NGORadar from './pages/NGORadar';
 import LiveTracking from './pages/LiveTracking';
@@ -43,6 +44,7 @@ const AnimatedRoutes = () => {
         <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/support" element={<AnimatedPage><Support /></AnimatedPage>} />
+        <Route path="/help-center" element={<AnimatedPage><HelpCenter /></AnimatedPage>} />
         <Route path="/donate-info" element={<AnimatedPage><DonateInfo /></AnimatedPage>} />
         <Route path="/ngo-radar" element={<AnimatedPage><NGORadar /></AnimatedPage>} />
         <Route path="/live-tracking" element={<AnimatedPage><LiveTracking /></AnimatedPage>} />
