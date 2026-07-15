@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, location, certificate } = req.body;
+    const { name, email, password, role, location } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -26,7 +26,6 @@ const registerUser = async (req, res) => {
       password,
       role,
       location,
-      certificate: role === 'NGO' ? certificate : undefined,
     });
 
     if (user) {

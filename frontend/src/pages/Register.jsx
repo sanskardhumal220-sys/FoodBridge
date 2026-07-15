@@ -11,7 +11,6 @@ const Register = () => {
     email: '',
     password: '',
     role: 'Donor',
-    certificate: '',
   });
   const navigate = useNavigate();
 
@@ -22,8 +21,7 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: formData.role,
-        certificate: formData.role === 'NGO' ? formData.certificate : undefined
+        role: formData.role
       });
       
       // Navigate to login after successful registration
@@ -37,51 +35,6 @@ const Register = () => {
     }
   };
 
-  const handleCertificateUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1024;
-          const MAX_HEIGHT = 1024;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-          setFormData({ ...formData, certificate: dataUrl });
-        };
-      };
-      reader.readAsDataURL(file);
-    } else {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, certificate: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -147,26 +100,7 @@ const Register = () => {
             </select>
           </motion.div>
           
-          <AnimatePresence>
-            {formData.role === 'NGO' && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-2xl border border-orange-200 dark:border-orange-800 overflow-hidden"
-              >
-                <label className="block text-sm font-bold text-orange-800 dark:text-orange-300 mb-3">NGO Registration Certificate</label>
-                <input 
-                  type="file" 
-                  accept="image/*,.pdf"
-                  required
-                  onChange={handleCertificateUpload}
-                  className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200 dark:file:bg-orange-900/50 dark:file:text-orange-300 transition-colors"
-                />
-                <p className="text-xs text-orange-600 dark:text-orange-400 mt-2 font-medium">Required for verification. Your account will be pending admin approval.</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           <motion.button 
             whileHover={{ scale: 1.02 }}

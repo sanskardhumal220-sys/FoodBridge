@@ -30,9 +30,6 @@ const userSchema = new mongoose.Schema({
     enum: ['Pending', 'Approved', 'Rejected'],
     default: function() { return this.role === 'NGO' ? 'Pending' : 'Approved'; }
   },
-  certificate: {
-    type: String,
-  },
   trustScore: {
     type: Number,
     default: 100
