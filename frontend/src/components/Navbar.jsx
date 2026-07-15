@@ -71,8 +71,8 @@ const Navbar = () => {
             >
               <Globe size={16} className="mr-2 text-primary-500" />
               <select 
+                value={i18n.resolvedLanguage || 'en'}
                 onChange={changeLanguage} 
-                defaultValue={i18n.language || 'en'}
                 className="bg-transparent text-sm font-medium outline-none cursor-pointer"
               >
                 <option value="en">English</option>
@@ -154,8 +154,8 @@ const Navbar = () => {
                 <span className="font-medium text-sm">Language</span>
               </div>
               <select 
+                value={i18n.resolvedLanguage || 'en'}
                 onChange={changeLanguage} 
-                defaultValue={i18n.language || 'en'}
                 className="bg-transparent text-sm font-bold outline-none cursor-pointer"
               >
                 <option value="en">English</option>

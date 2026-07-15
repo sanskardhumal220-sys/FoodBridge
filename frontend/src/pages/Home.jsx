@@ -121,22 +121,22 @@ const Home = () => {
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-[1.1]">
-            One Click. <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-primary-400 to-amber-500">Zero Waste.</span> <br className="hidden md:block" />
-            Maximum Impact.
+            {t('home.hero_title')} <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-primary-400 to-amber-500">{t('home.hero_highlight')}</span> <br className="hidden md:block" />
+            {t('home.hero_suffix')}
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-            FoodBridge connects surplus food from homes, restaurants, and events with NGOs and volunteers instantly. Powered by state-of-the-art AI.
+            {t('home.hero_desc')}
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto z-20">
             <Link to="/register" className="group relative px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(22,163,74,0.3)] flex items-center justify-center gap-2">
-              <span className="relative z-10 flex items-center gap-2">Start Rescuing Food <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></span>
+              <span className="relative z-10 flex items-center gap-2">{t('home.cta')} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></span>
               <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
             <Link to="/dashboard" className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-full font-bold text-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-sm">
-              Explore Platform
+              {t('home.text2')}
             </Link>
           </motion.div>
 
