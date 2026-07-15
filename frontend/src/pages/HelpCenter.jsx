@@ -5,7 +5,6 @@ const HelpCenter = () => {
   const categories = [
     { icon: <AlertCircle />, title: "Account Issues", desc: "Login problems, password resets, and profile management." },
     { icon: <LifeBuoy />, title: "Donation Problems", desc: "Cancellation, tracking issues, or volunteer delays." },
-    { icon: <Building2 />, title: "NGO Registration", desc: "Verification process and documentation help." },
     { icon: <Users />, title: "Volunteer Support", desc: "Guidelines, app usage, and safety protocols." }
   ];
 
@@ -69,7 +68,7 @@ const HelpCenter = () => {
           transition={{ delay: 0.3 }}
         >
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Common Categories</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((cat, idx) => (
               <div key={idx} className="glass p-6 rounded-3xl border border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 hover:shadow-lg transition-shadow">
                 <div className="mb-4 text-gray-700 dark:text-gray-300">
