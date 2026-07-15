@@ -48,9 +48,9 @@ const Footer = () => {
             <ul className="space-y-4">
               {[
                 { name: 'Dashboard', path: '/dashboard' }, 
-                { name: 'Start Donating', path: '/dashboard' }, 
-                { name: 'NGO Radar', path: '/dashboard' }, 
-                { name: 'Live Tracking', path: '/dashboard' }
+                { name: 'Start Donating', path: '/donate-info' }, 
+                { name: 'NGO Radar', path: '/ngo-radar' }, 
+                { name: 'Live Tracking', path: '/live-tracking' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link to={item.path} className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">
@@ -87,7 +87,7 @@ const Footer = () => {
               {[
                 { name: 'Terms of Service', path: '/terms' }, 
                 { name: 'Privacy Policy', path: '/privacy' }, 
-                { name: 'Cookie Policy', path: '/privacy' }
+                { name: 'Cookie Policy', path: '/cookie-policy' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link to={item.path} className="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors text-sm font-medium">

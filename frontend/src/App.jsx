@@ -14,6 +14,10 @@ import Feedback from './pages/Feedback';
 import ReportIssue from './pages/ReportIssue';
 import Settings from './pages/Settings';
 import Support from './pages/Support';
+import DonateInfo from './pages/DonateInfo';
+import NGORadar from './pages/NGORadar';
+import LiveTracking from './pages/LiveTracking';
+import CookiePolicy from './pages/CookiePolicy';
 
 import ToastProvider from './components/ToastProvider';
 import Footer from './components/Footer';
@@ -39,6 +43,10 @@ const AnimatedRoutes = () => {
         <Route path="/dashboard" element={<AnimatedPage><Dashboard /></AnimatedPage>} />
         <Route path="/settings" element={<AnimatedPage><Settings /></AnimatedPage>} />
         <Route path="/support" element={<AnimatedPage><Support /></AnimatedPage>} />
+        <Route path="/donate-info" element={<AnimatedPage><DonateInfo /></AnimatedPage>} />
+        <Route path="/ngo-radar" element={<AnimatedPage><NGORadar /></AnimatedPage>} />
+        <Route path="/live-tracking" element={<AnimatedPage><LiveTracking /></AnimatedPage>} />
+        <Route path="/cookie-policy" element={<AnimatedPage><CookiePolicy /></AnimatedPage>} />
 
       </Routes>
     </AnimatePresence>
