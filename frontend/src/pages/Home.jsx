@@ -15,54 +15,54 @@ const Home = () => {
 
   // Demo stats as requested
   const stats = [
-    { label: 'Sample Donations', value: '25', suffix: '+' },
-    { label: 'NGO Partners (Demo)', value: '5', suffix: '' },
-    { label: 'Pilot Cities', value: '3', suffix: '' },
-    { label: 'Potential Carbon Savings', value: '30', suffix: 'T' }
+    { label: t('home.stat_donations'), value: '25', suffix: '+' },
+    { label: t('home.stat_ngo'), value: '5', suffix: '' },
+    { label: t('home.stat_cities'), value: '3', suffix: '' },
+    { label: t('home.stat_carbon'), value: '30', suffix: 'T' }
   ];
 
   const timelineSteps = [
-    { icon: Camera, title: "1. Upload Surplus Food", desc: "Snap a photo of your excess food in seconds." },
-    { icon: Sparkles, title: "2. AI FoodBrain Analyzes", desc: "Our AI predicts freshness, type, and servings instantly." },
-    { icon: MapPin, title: "3. NGO Accepts", desc: "Nearby verified NGOs are notified and claim the food." },
-    { icon: Truck, title: "4. Volunteer Delivers", desc: "Live-tracked delivery ensures food arrives safely and fast." }
+    { icon: Camera, title: t('home.step1_title'), desc: t('home.step1_desc') },
+    { icon: Sparkles, title: t('home.step2_title'), desc: t('home.step2_desc') },
+    { icon: MapPin, title: t('home.step3_title'), desc: t('home.step3_desc') },
+    { icon: Truck, title: t('home.step4_title'), desc: t('home.step4_desc') }
   ];
 
   const features = [
     {
       icon: Sparkles,
-      title: "AI FoodBrain",
-      desc: "Instantly analyzes food images to estimate freshness, safety, and nutritional impact.",
-      points: ["Food recognition", "Freshness prediction", "Safety score"],
+      title: t('home.feat_ai_title'),
+      desc: t('home.feat_ai_desc'),
+      points: [t('home.feat_ai_p1'), t('home.feat_ai_p2'), t('home.feat_ai_p3')],
       color: "from-blue-500 to-indigo-500"
     },
     {
       icon: Map,
-      title: "NGO Radar Map",
-      desc: "Connects donors with the nearest NGOs using real-time location mapping.",
-      points: ["Nearby NGOs", "Real-time urgency indicators", "Direct routing"],
+      title: t('home.feat_radar_title'),
+      desc: t('home.feat_radar_desc'),
+      points: [t('home.feat_radar_p1'), t('home.feat_radar_p2'), t('home.feat_radar_p3')],
       color: "from-primary-500 to-emerald-500",
       className: "lg:col-span-2"
     },
     {
       icon: Truck,
-      title: "Volunteer Network",
-      desc: "Empower local drivers with optimized routing.",
-      points: ["Live route tracking", "Distance calculation", "Delivery verification"],
+      title: t('home.feat_vol_title'),
+      desc: t('home.feat_vol_desc'),
+      points: [t('home.feat_vol_p1'), t('home.feat_vol_p2'), t('home.feat_vol_p3')],
       color: "from-orange-500 to-amber-500"
     },
     {
       icon: MessageSquare,
-      title: "Smart Communication",
-      desc: "Seamless live coordination between all parties.",
-      points: ["Real-time chat", "AI auto translation", "Privacy protected"],
+      title: t('home.feat_comm_title'),
+      desc: t('home.feat_comm_desc'),
+      points: [t('home.feat_comm_p1'), t('home.feat_comm_p2'), t('home.feat_comm_p3')],
       color: "from-purple-500 to-pink-500"
     },
     {
       icon: Globe,
-      title: "Impact Dashboard",
-      desc: "Track your contributions and environmental savings.",
-      points: ["Meals saved", "Carbon reduction", "Social impact metrics"],
+      title: t('home.feat_impact_title'),
+      desc: t('home.feat_impact_desc'),
+      points: [t('home.feat_impact_p1'), t('home.feat_impact_p2'), t('home.feat_impact_p3')],
       color: "from-teal-500 to-cyan-500",
       className: "lg:col-span-2"
     }
@@ -161,7 +161,7 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
-          <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-8 font-light italic">*Statistics shown for demonstration purposes only.</p>
+          <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-8 font-light italic">{t('home.stat_demo_note')}</p>
         </div>
       </section>
 
@@ -169,8 +169,8 @@ const Home = () => {
       <section className="w-full py-32 bg-[#fafafa] dark:bg-[#0a0a0a] relative">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">How FoodBridge Works</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">A seamless, 4-step process designed to rescue food at lightning speed.</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">{t('home.how_title')}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t('home.how_desc')}</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8 relative">
@@ -194,8 +194,8 @@ const Home = () => {
       <section className="w-full py-32 bg-white dark:bg-[#0f0f0f] border-t border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-20 md:w-2/3">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Powerful Features Built for Scale</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">Everything you need to seamlessly coordinate surplus food distribution from a single platform.</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">{t('home.feat_title')}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">{t('home.feat_desc')}</p>
           </div>
 
           <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -224,9 +224,9 @@ const Home = () => {
       <section className="w-full py-32 bg-[#fafafa] dark:bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">🌍 Built for Communities</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">{t('home.comm_title')}</h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              FoodBridge is designed to create meaningful impact across the entire food redistribution ecosystem.
+              {t('home.comm_desc')}
             </p>
           </div>
 
@@ -234,29 +234,29 @@ const Home = () => {
             {/* Card 1 */}
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
               <Utensils className="w-10 h-10 text-primary-500 mb-6" />
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Restaurants & Hotels</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Reduce food waste, improve sustainability, and contribute surplus food to communities in need.</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('home.comm_rest_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{t('home.comm_rest_desc')}</p>
             </motion.div>
             
             {/* Card 2 */}
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
               <HomeIcon className="w-10 h-10 text-primary-500 mb-6" />
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">NGOs & Shelters</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Receive nearby food donations quickly through AI-powered matching and real-time coordination.</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('home.comm_ngo_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{t('home.comm_ngo_desc')}</p>
             </motion.div>
 
             {/* Card 3 */}
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="p-8 rounded-[2rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none hover:-translate-y-2 transition-transform duration-300">
               <Users className="w-10 h-10 text-primary-500 mb-6" />
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Volunteers & Communities</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Participate in food rescue missions and help deliver meals safely and efficiently.</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('home.comm_vol_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{t('home.comm_vol_desc')}</p>
             </motion.div>
 
             {/* Card 4 */}
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }} className="p-8 rounded-[2rem] bg-gradient-to-br from-primary-50 to-primary-100/50 dark:from-primary-900/20 dark:to-primary-900/10 border border-primary-100 dark:border-primary-800 shadow-xl shadow-primary-500/10 hover:-translate-y-2 transition-transform duration-300">
               <Leaf className="w-10 h-10 text-primary-600 dark:text-primary-400 mb-6" />
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Environmental Impact</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Prevent food wastage and reduce unnecessary carbon emissions through smarter redistribution.</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('home.comm_env_title')}</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{t('home.comm_env_desc')}</p>
             </motion.div>
           </div>
 
@@ -268,15 +268,15 @@ const Home = () => {
             <div className="grid md:grid-cols-3 gap-8 relative z-10 text-center">
               <div>
                 <div className="text-4xl font-extrabold mb-2">40%</div>
-                <div className="text-gray-300 font-medium">of food produced globally is wasted.</div>
+                <div className="text-gray-300 font-medium">{t('home.stat_waste')}</div>
               </div>
               <div>
                 <div className="text-4xl font-extrabold mb-2">Millions</div>
-                <div className="text-gray-300 font-medium">of people still face food insecurity.</div>
+                <div className="text-gray-300 font-medium">{t('home.stat_insecurity')}</div>
               </div>
               <div>
                 <div className="text-4xl font-extrabold mb-2">AI + You</div>
-                <div className="text-gray-300 font-medium">FoodBridge aims to bridge this gap.</div>
+                <div className="text-gray-300 font-medium">{t('home.stat_bridge')}</div>
               </div>
             </div>
           </motion.div>
@@ -291,14 +291,14 @@ const Home = () => {
         
         <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
-            Together We Can <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-400">End Food Waste.</span>
+            {t('home.cta_title1')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-amber-400">{t('home.cta_title2')}</span>
           </motion.h2>
           <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
-            Join thousands of restaurants, NGOs, and volunteers making a real impact every single day.
+            {t('home.cta_desc')}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
              <Link to="/register" className="inline-flex items-center justify-center gap-2 px-10 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:bg-gray-100 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)]">
-               Join FoodBridge
+               {t('home.cta_btn')}
              </Link>
           </motion.div>
         </div>
