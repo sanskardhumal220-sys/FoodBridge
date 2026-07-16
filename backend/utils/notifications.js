@@ -4,6 +4,21 @@
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
 
+// Initialize Nodemailer Transport
+const gmailUser = process.env.GMAIL_USER;
+const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+
+let transporter = null;
+if (gmailUser && gmailAppPassword) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: gmailUser,
+      pass: gmailAppPassword
+    }
+  });
+}
+
 // Initialize Twilio Client if credentials are provided
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
@@ -15,9 +30,28 @@ if (twilioAccountSid && twilioAuthToken) {
 }
 
 /**
- * Mocks sending an email
+ * Sends an email notification (or mocks if no credentials)
  */
 const sendEmailNotification = async ({ to, subject, body }) => {
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail({
+        from: `"FoodBridge" <${gmailUser}>`,
+        to: to,
+        subject: subject,
+        text: body, // plaintext body
+      });
+      console.log(`\n✅ REAL EMAIL NOTIFICATION SENT to ${to}`);
+      console.log(`Message ID: ${info.messageId}\n`);
+      return true;
+    } catch (error) {
+      console.error('\n❌ FAILED TO SEND REAL EMAIL NOTIFICATION:');
+      console.error(error.message);
+      console.log('Falling back to mock email logging...\n');
+    }
+  }
+
+  // Fallback to mock logging
   console.log('\n=============================================');
   console.log('📧 MOCK EMAIL NOTIFICATION SENT');
   console.log(`To: ${to}`);
